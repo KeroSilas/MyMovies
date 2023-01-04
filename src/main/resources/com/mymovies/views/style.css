@@ -1,0 +1,46 @@
+.root {
+	-fx-accent: #2d61e3;
+	-fx-focus-color: linear-gradient(to bottom, #376ef8, #295cdc);
+}
+
+.slider .track {
+    -fx-pref-height: 8;
+}
+
+.slider:vertical .track {
+    -fx-pref-width: 8;
+}
+
+.slider .track{
+    -fx-opacity: 0;
+}
+
+.slider .thumb {
+    -fx-pref-height: 16;
+    -fx-pref-width: 16;
+}
+
+.progress-bar .bar {
+    -fx-padding: 1px;
+    -fx-background-insets: 1 1 1 1;
+    -fx-background-radius: 4;
+    -fx-background-color: linear-gradient(to right, #376ef8, #295cdc);
+}
+
+.progress-bar > .track {
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-background-color: white;
+    -fx-border-color: #b6b6b6;
+}
+
+.list-cell:empty,
+.table-row-cell:empty {
+    -fx-background-color: transparent;
+}
+
+.list-cell,
+.table-row-cell{
+    -fx-border-color: transparent;
+    -fx-table-cell-border-color: transparent;
+}
