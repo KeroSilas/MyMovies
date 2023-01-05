@@ -20,9 +20,9 @@ public class Player {
     private MediaPlayer mediaPlayer;
 
     private final SimpleBooleanProperty hasLoadedProperty = new SimpleBooleanProperty();
-    private Song currentSong;
-    private Playlist currentPlaylist;
-    private List<Song> allSongs;
+    private Movie currentMovie;
+    private Category currentCategory;
+    private List<Movie> allMovies;
 
     private boolean isShuffling;
     private int shuffleCounter = 0;
@@ -43,9 +43,9 @@ public class Player {
     }
 
     //Constructor for when songs list is not empty.
-    public Player(List<Song> songs, Song song) {
+    public Player(List<Movie> movies, Movie movie) {
         this(); //Initialize the base MediaPlayer object, so that the next line can utilize its functions.
-        load(songs, song);
+        load(movies, movie);
         pause();
     }
 
@@ -56,7 +56,7 @@ public class Player {
     }
 
     //Used in prev/next methods.
-    private void load(Song song) {
+    private void load(Movie movie) {
         //Stores player values in temporary variables so that they can be reapplied on the new media-player object.
         double volumeBeforeMediaChange = mediaPlayer.getVolume();
         boolean isMutedBeforeMediaChange = isMuted();
@@ -64,7 +64,7 @@ public class Player {
 
         mediaPlayer.dispose(); //Removes the previous MediaPlayer object, as a new one will be created from the next load.
 
-        path = Path.of("src/main/resources/com/mytunes/music/", song.getPath());
+        path = Path.of("src/main/resources/com/mytunes/music/", movie.getPath());
         load(path);
 
         //Reapplies player values from before.
@@ -73,7 +73,7 @@ public class Player {
         repeat(isRepeatingBeforeMediaChange);
         play();
 
-        currentSong = song;
+        currentMovie = movie;
 
         //Toggles to either true or false when a song has been loaded.
         //It is used to detect a change to run the update() method in MyTunesController.
@@ -81,39 +81,39 @@ public class Player {
     }
 
     //Used when clicking a song on the all songs list.
-    public void load(List<Song> songs, Song song) {
+    public void load(List<Movie> movies, Movie movie) {
         setListStatus(ListStatus.ALL_SONGS);
-        load(song);
+        load(movie);
 
         //Resets shuffle algorithm.
         shuffleCounter = 0;
         shuffleNumbers.clear();
-        while (shuffleCounter < songs.size()) {
+        while (shuffleCounter < movies.size()) {
             shuffleNumbers.add(shuffleCounter++);
         }
         Collections.shuffle(shuffleNumbers);
-        shuffleNumbers.remove((Integer) songs.indexOf(song));
-        shuffleNumbers.add(songs.indexOf(song));
+        shuffleNumbers.remove((Integer) movies.indexOf(movie));
+        shuffleNumbers.add(movies.indexOf(movie));
 
-        allSongs = songs;
+        allMovies = movies;
     }
 
     //Used when clicking a song on a playlist.
-    public void load(Playlist playlist, Song song) {
+    public void load(Category category, Movie movie) {
         setListStatus(ListStatus.PLAYLIST);
-        load(song);
+        load(movie);
 
         //Resets shuffle algorithm.
         shuffleCounter = 0;
         shuffleNumbers.clear();
-        while (shuffleCounter < playlist.getSongs().size()) {
+        while (shuffleCounter < category.getMovies().size()) {
             shuffleNumbers.add(shuffleCounter++);
         }
         Collections.shuffle(shuffleNumbers);
-        shuffleNumbers.remove((Integer) playlist.getSongs().indexOf(song));
-        shuffleNumbers.add(playlist.getSongs().indexOf(song));
+        shuffleNumbers.remove((Integer) category.getMovies().indexOf(movie));
+        shuffleNumbers.add(category.getMovies().indexOf(movie));
 
-        currentPlaylist = playlist;
+        currentCategory = category;
     }
 
     public void play() {
@@ -129,25 +129,25 @@ public class Player {
     public void next() {
         if (getListStatus() == Player.ListStatus.ALL_SONGS) {
             if (isShuffling()) {
-                load(allSongs.get(shuffleNumbers.get(0)));
+                load(allMovies.get(shuffleNumbers.get(0)));
                 shuffleNumbers.add(shuffleNumbers.get(0));
                 shuffleNumbers.remove(0);
-            } else if (allSongs.indexOf(getCurrentSong()) == allSongs.size() - 1) { //Checks if current song is at the end of the list.
-                load(allSongs.get(0)); //Returns to first song on the list.
+            } else if (allMovies.indexOf(getCurrentSong()) == allMovies.size() - 1) { //Checks if current song is at the end of the list.
+                load(allMovies.get(0)); //Returns to first song on the list.
             } else {
-                Song nextSong = allSongs.get(allSongs.indexOf(getCurrentSong()) + 1); //Gets next song on the list.
-                load(nextSong);
+                Movie nextMovie = allMovies.get(allMovies.indexOf(getCurrentSong()) + 1); //Gets next song on the list.
+                load(nextMovie);
             }
         } else if (getListStatus() == Player.ListStatus.PLAYLIST) {
             if (isShuffling()) {
-                load(currentPlaylist.getSongs().get(shuffleNumbers.get(0)));
+                load(currentCategory.getMovies().get(shuffleNumbers.get(0)));
                 shuffleNumbers.add(shuffleNumbers.get(0));
                 shuffleNumbers.remove(0);
-            } else if (currentPlaylist.getSongs().indexOf(getCurrentSong()) == currentPlaylist.getSongs().size() - 1) {
-                load(currentPlaylist.getSongs().get(0));
+            } else if (currentCategory.getMovies().indexOf(getCurrentSong()) == currentCategory.getMovies().size() - 1) {
+                load(currentCategory.getMovies().get(0));
             } else {
-                Song nextSong = currentPlaylist.getSongs().get(currentPlaylist.getSongs().indexOf(getCurrentSong()) + 1);
-                load(nextSong);
+                Movie nextMovie = currentCategory.getMovies().get(currentCategory.getMovies().indexOf(getCurrentSong()) + 1);
+                load(nextMovie);
             }
         }
     }
@@ -157,18 +157,18 @@ public class Player {
         if (getCurrentTime().toSeconds() > 3) { //Checks if less than 3 seconds have passed.
             reset(); //Resets currently playing song.
         } else if (getListStatus() == Player.ListStatus.ALL_SONGS) {
-            if (allSongs.indexOf(getCurrentSong()) == 0) { //Checks if current song is at the start of the list.
+            if (allMovies.indexOf(getCurrentSong()) == 0) { //Checks if current song is at the start of the list.
                 reset();
             } else {
-                Song previousSong = allSongs.get(allSongs.indexOf(getCurrentSong()) - 1); //Gets previous song on the list.
-                load(previousSong);
+                Movie previousMovie = allMovies.get(allMovies.indexOf(getCurrentSong()) - 1); //Gets previous song on the list.
+                load(previousMovie);
             }
         } else if (getListStatus() == Player.ListStatus.PLAYLIST) {
-            if (currentPlaylist.getSongs().indexOf(getCurrentSong()) == 0) {
+            if (currentCategory.getMovies().indexOf(getCurrentSong()) == 0) {
                 reset();
             } else {
-                Song previousSong = currentPlaylist.getSongs().get(currentPlaylist.getSongs().indexOf(getCurrentSong()) - 1);
-                load(previousSong);
+                Movie previousMovie = currentCategory.getMovies().get(currentCategory.getMovies().indexOf(getCurrentSong()) - 1);
+                load(previousMovie);
             }
         }
     }
@@ -202,12 +202,12 @@ public class Player {
         return mediaPlayer.getCurrentTime();
     }
 
-    public Song getCurrentSong() {
-        return currentSong;
+    public Movie getCurrentSong() {
+        return currentMovie;
     }
 
-    public Playlist getCurrentPlaylist() {
-        return currentPlaylist;
+    public Category getCurrentPlaylist() {
+        return currentCategory;
     }
 
     //Used to retrieve metadata in MyTunesController.
@@ -250,12 +250,12 @@ public class Player {
         return mediaPlayer.isMute();
     }
 
-    public void updateCurrentPlaylist(Playlist playlist) {
-        currentPlaylist = playlist;
+    public void updateCurrentPlaylist(Category category) {
+        currentCategory = category;
     }
 
-    public void updateCurrentAllSongs(List<Song> allSongs) {
-        this.allSongs = allSongs;
+    public void updateCurrentAllSongs(List<Movie> allMovies) {
+        this.allMovies = allMovies;
     }
 
     public ReadOnlyObjectProperty<Duration> currentTimeProperty() {

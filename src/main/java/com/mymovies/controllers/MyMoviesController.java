@@ -28,36 +28,36 @@ public class MyMoviesController {
     private Player player;
 
     //Initialize all the images that will be used when toggling different button states.
-    private final Image playImage = new Image("file:src/main/resources/com/mytunes/images/play.png");
-    private final Image pauseImage = new Image("file:src/main/resources/com/mytunes/images/pause.png");
-    private final Image muteImage = new Image("file:src/main/resources/com/mytunes/images/muted.png");
-    private final Image unmuteImage = new Image("file:src/main/resources/com/mytunes/images/unmuted.png");
-    private final Image repeatImage = new Image("file:src/main/resources/com/mytunes/images/repeat.png");
-    private final Image unrepeatImage = new Image("file:src/main/resources/com/mytunes/images/repeating.png");
-    private final Image shuffleImage = new Image("file:src/main/resources/com/mytunes/images/shuffle.png");
-    private final Image unshuffleImage = new Image("file:src/main/resources/com/mytunes/images/shuffling.png");
-    private final Image searchImage = new Image("file:src/main/resources/com/mytunes/images/search.png");
-    private final Image unsearchImage = new Image("file:src/main/resources/com/mytunes/images/cancel.png");
-    private final Image defaultAlbumImage = new Image("file:src/main/resources/com/mytunes/images/default-album-art.png");
+    private final Image playImage = new Image("file:src/main/resources/com/mymovies/images/play.png");
+    private final Image pauseImage = new Image("file:src/main/resources/com/mymovies/images/pause.png");
+    private final Image muteImage = new Image("file:src/main/resources/com/mymovies/images/muted.png");
+    private final Image unmuteImage = new Image("file:src/main/resources/com/mymovies/images/unmuted.png");
+    private final Image repeatImage = new Image("file:src/main/resources/com/mymovies/images/repeat.png");
+    private final Image unrepeatImage = new Image("file:src/main/resources/com/mymovies/images/repeating.png");
+    private final Image shuffleImage = new Image("file:src/main/resources/com/mymovies/images/shuffle.png");
+    private final Image unshuffleImage = new Image("file:src/main/resources/com/mymovies/images/shuffling.png");
+    private final Image searchImage = new Image("file:src/main/resources/com/mymovies/images/search.png");
+    private final Image unsearchImage = new Image("file:src/main/resources/com/mymovies/images/cancel.png");
+    private final Image defaultAlbumImage = new Image("file:src/main/resources/com/mymovies/images/default-album-art.png");
 
-    private SongsManager songsManager;
-    private PlaylistsManager playlistsManager;
+    private MovieManager movieManager;
+    private CategoryManager categoryManager;
     private boolean isSearching = false;
     protected static boolean isNewPressed;
 
-    private final ObservableList<Playlist> playlistObservableList = FXCollections.observableArrayList();
-    private final ObservableList<Song> songObservableList = FXCollections.observableArrayList();
-    private final ObservableList<Song> songInPlaylistObservableList = FXCollections.observableArrayList();
-    protected static Playlist selectedPlaylist;
-    protected static Song selectedSong;
-    private Song selectedSongInPlaylist;
+    private final ObservableList<Category> categoryObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Movie> movieObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Movie> movieInPlaylistObservableList = FXCollections.observableArrayList();
+    protected static Category selectedCategory;
+    protected static Movie selectedMovie;
+    private Movie selectedMovieInPlaylist;
 
-    @FXML private TableView<Playlist> playlistTableView;
-    @FXML private TableColumn<Playlist, String> nameColumn, totalDurationColumn;
-    @FXML private TableColumn<Playlist, Integer> songsColumn;
-    @FXML private TableView<Song> songTableView;
-    @FXML private TableColumn<Song, String> titleColumn, artistColumn, categoryColumn, durationColumn;
-    @FXML private ListView<Song> songsInPlaylistListView;
+    @FXML private TableView<Category> categoryTableView;
+    @FXML private TableColumn<Category, String> nameColumn, totalDurationColumn;
+    @FXML private TableColumn<Category, Integer> songsColumn;
+    @FXML private TableView<Movie> movieTableView;
+    @FXML private TableColumn<Movie, String> titleColumn, artistColumn, categoryColumn, durationColumn;
+    @FXML private ListView<Movie> catMovieListView;
 
     @FXML private TextField searchTextField;
 
@@ -74,45 +74,45 @@ public class MyMoviesController {
     ///// --- LIST AND SELECTION METHODS --- /////
 
     @FXML void handlePlaylistClick(MouseEvent e) {
-        selectedPlaylist = playlistTableView.getSelectionModel().getSelectedItem();
-        if (selectedPlaylist != null) {
-            songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
-            if (selectedPlaylist.getNumberOfSongs() > 0 && e.getClickCount() == 2) {
-                songTableView.getSelectionModel().clearSelection();
-                player.load(selectedPlaylist, selectedPlaylist.getSongs().get(0));
-                songsInPlaylistListView.getSelectionModel().select(player.getCurrentSong());
+        selectedCategory = categoryTableView.getSelectionModel().getSelectedItem();
+        if (selectedCategory != null) {
+            movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
+            if (selectedCategory.getNumberOfMovies() > 0 && e.getClickCount() == 2) {
+                movieTableView.getSelectionModel().clearSelection();
+                player.load(selectedCategory, selectedCategory.getMovies().get(0));
+                catMovieListView.getSelectionModel().select(player.getCurrentSong());
             }
         }
     }
 
     @FXML void handleSongClick(MouseEvent e) {
-        selectedSong = songTableView.getSelectionModel().getSelectedItem();
-        if (selectedSong != null && e.getClickCount() == 2) {
-            songsInPlaylistListView.getSelectionModel().clearSelection();
-            player.load(songObservableList, selectedSong);
+        selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
+        if (selectedMovie != null && e.getClickCount() == 2) {
+            catMovieListView.getSelectionModel().clearSelection();
+            player.load(movieObservableList, selectedMovie);
         }
     }
 
     @FXML void handleSongInPlaylistClick(MouseEvent e) {
-        selectedSongInPlaylist = songsInPlaylistListView.getSelectionModel().getSelectedItem();
-        if (selectedSongInPlaylist != null && e.getClickCount() == 2) {
-            songTableView.getSelectionModel().clearSelection();
-            player.load(selectedPlaylist, selectedSongInPlaylist);
+        selectedMovieInPlaylist = catMovieListView.getSelectionModel().getSelectedItem();
+        if (selectedMovieInPlaylist != null && e.getClickCount() == 2) {
+            movieTableView.getSelectionModel().clearSelection();
+            player.load(selectedCategory, selectedMovieInPlaylist);
         }
     }
 
     @FXML void handleMoveSongUp() {
-        Collections.swap(selectedPlaylist.getSongs(), selectedPlaylist.getSongs().indexOf(selectedSongInPlaylist), selectedPlaylist.getSongs().indexOf(selectedSongInPlaylist) - 1);
-        songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
-        songsInPlaylistListView.getSelectionModel().select(selectedSongInPlaylist);
-        player.updateCurrentPlaylist(selectedPlaylist);
+        Collections.swap(selectedCategory.getMovies(), selectedCategory.getMovies().indexOf(selectedMovieInPlaylist), selectedCategory.getMovies().indexOf(selectedMovieInPlaylist) - 1);
+        movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
+        catMovieListView.getSelectionModel().select(selectedMovieInPlaylist);
+        player.updateCurrentPlaylist(selectedCategory);
     }
 
     @FXML void handleMoveSongDown() {
-        Collections.swap(selectedPlaylist.getSongs(), selectedPlaylist.getSongs().indexOf(selectedSongInPlaylist), selectedPlaylist.getSongs().indexOf(selectedSongInPlaylist) + 1);
-        songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
-        songsInPlaylistListView.getSelectionModel().select(selectedSongInPlaylist);
-        player.updateCurrentPlaylist(selectedPlaylist);
+        Collections.swap(selectedCategory.getMovies(), selectedCategory.getMovies().indexOf(selectedMovieInPlaylist), selectedCategory.getMovies().indexOf(selectedMovieInPlaylist) + 1);
+        movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
+        catMovieListView.getSelectionModel().select(selectedMovieInPlaylist);
+        player.updateCurrentPlaylist(selectedCategory);
     }
 
     ///// --- MANAGER OBJECTS CONTROLS --- /////
@@ -120,12 +120,12 @@ public class MyMoviesController {
     //searches for songs in the database
     @FXML void handleSearch() {
         if (!isSearching && !searchTextField.getText().isEmpty()) {
-            songObservableList.setAll(songsManager.searchSongs(searchTextField.getText()));
+            movieObservableList.setAll(movieManager.searchSongs(searchTextField.getText()));
             searchUnsearchImage.setImage(unsearchImage);
             isSearching = true;
         } else {
             searchTextField.clear();
-            songObservableList.setAll(songsManager.getAllSongs());
+            movieObservableList.setAll(movieManager.getAllSongs());
             searchUnsearchImage.setImage(searchImage);
             isSearching = false;
         }
@@ -134,38 +134,38 @@ public class MyMoviesController {
     @FXML void handleAddPlaylist() {
         isNewPressed = true;
         showNewEditPlaylistWindow();
-        playlistObservableList.setAll(playlistsManager.getAllPlaylists());
+        categoryObservableList.setAll(categoryManager.getAllPlaylists());
     }
 
     @FXML void handleAddSong() {
         isNewPressed = true;
         showNewEditSongWindow();
-        songObservableList.setAll(songsManager.getAllSongs());
-        player.updateCurrentAllSongs(songsManager.getAllSongs());
+        movieObservableList.setAll(movieManager.getAllSongs());
+        player.updateCurrentAllSongs(movieManager.getAllSongs());
     }
 
     @FXML void handleAddSongToPlaylist() {
         boolean containsDuplicate = false;
-        if (selectedPlaylist != null && selectedSong != null) {
-            for (Song s : selectedPlaylist.getSongs()) {
-                if (s.getId() == selectedSong.getId()) {
+        if (selectedCategory != null && selectedMovie != null) {
+            for (Movie s : selectedCategory.getMovies()) {
+                if (s.getId() == selectedMovie.getId()) {
                     containsDuplicate = true;
                     Optional<ButtonType> result = showAlertWindow("You already have this song in the selected playlist.\nDo you want to add a duplicate?");
                     if (result.isPresent() && result.get() == ButtonType.YES) {
-                        selectedPlaylist.addSong(selectedSong);
-                        songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
-                        playlistObservableList.setAll(playlistsManager.getAllPlaylists());
-                        player.updateCurrentPlaylist(selectedPlaylist);
+                        selectedCategory.addMovie(selectedMovie);
+                        movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
+                        categoryObservableList.setAll(categoryManager.getAllPlaylists());
+                        player.updateCurrentPlaylist(selectedCategory);
                     }
                     break;
                 }
             }
         }
-        if (selectedPlaylist != null && selectedSong != null && !containsDuplicate) {
-            selectedPlaylist.addSong(selectedSong);
-            songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
-            playlistObservableList.setAll(playlistsManager.getAllPlaylists());
-            player.updateCurrentPlaylist(selectedPlaylist);
+        if (selectedCategory != null && selectedMovie != null && !containsDuplicate) {
+            selectedCategory.addMovie(selectedMovie);
+            movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
+            categoryObservableList.setAll(categoryManager.getAllPlaylists());
+            player.updateCurrentPlaylist(selectedCategory);
         }
     }
 
@@ -254,8 +254,8 @@ public class MyMoviesController {
 
     public void initialize() {
         //Initialize song and playlist managers.
-        songsManager = new SongsManager();
-        playlistsManager = new PlaylistsManager();
+        movieManager = new MovieManager();
+        categoryManager = new CategoryManager();
 
         //Set up the table columns and cells for the song table.
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("Title"));
@@ -263,10 +263,10 @@ public class MyMoviesController {
         categoryColumn.setCellValueFactory(new PropertyValueFactory<>("Category"));
         durationColumn.setCellValueFactory(new PropertyValueFactory<>("DurationInString"));
         durationColumn.setStyle( "-fx-alignment: CENTER-RIGHT;");
-        songObservableList.addAll(songsManager.getAllSongs());
-        songTableView.setItems(songObservableList);
-        songTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        songTableView.setContextMenu(getSongsContextMenu());
+        movieObservableList.addAll(movieManager.getAllSongs());
+        movieTableView.setItems(movieObservableList);
+        movieTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        movieTableView.setContextMenu(getSongsContextMenu());
 
         //Set up the table columns and cells for the playlist table.
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
@@ -274,22 +274,22 @@ public class MyMoviesController {
         songsColumn.setStyle( "-fx-alignment: CENTER;");
         totalDurationColumn.setCellValueFactory(new PropertyValueFactory<>("DurationInString"));
         totalDurationColumn.setStyle( "-fx-alignment: CENTER-RIGHT;");
-        playlistObservableList.addAll(playlistsManager.getAllPlaylists());
-        playlistTableView.setItems(playlistObservableList);
-        playlistTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        playlistTableView.setContextMenu(getPlaylistsContextMenu());
+        categoryObservableList.addAll(categoryManager.getAllPlaylists());
+        categoryTableView.setItems(categoryObservableList);
+        categoryTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        categoryTableView.setContextMenu(getPlaylistsContextMenu());
 
-        songsInPlaylistListView.setItems(songInPlaylistObservableList);
-        songsInPlaylistListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        songsInPlaylistListView.setContextMenu(getSongsInPlaylistContextMenu());
+        catMovieListView.setItems(movieInPlaylistObservableList);
+        catMovieListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        catMovieListView.setContextMenu(getSongsInPlaylistContextMenu());
 
         //Initialize player with first song on Songs list if there is any.
-        if (songObservableList.isEmpty()) {
+        if (movieObservableList.isEmpty()) {
             player = new Player();
         } else {
-            player = new Player(songsManager.getAllSongs(), songsManager.getAllSongs().get(0));
-            songTableView.getSelectionModel().select(player.getCurrentSong());
-            Platform.runLater(() -> songTableView.requestFocus());
+            player = new Player(movieManager.getAllSongs(), movieManager.getAllSongs().get(0));
+            movieTableView.getSelectionModel().select(player.getCurrentSong());
+            Platform.runLater(() -> movieTableView.requestFocus());
         }
 
         //Add listener to volumeSlider.
@@ -309,8 +309,8 @@ public class MyMoviesController {
         });
 
         //Next three sets of listeners are responsible for disabling or enabling buttons that have no valid selection input.
-        playlistTableView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
-            if (!Objects.equals(oldValue, newValue) && playlistTableView.getSelectionModel().getSelectedItem() == null) {
+        categoryTableView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
+            if (!Objects.equals(oldValue, newValue) && categoryTableView.getSelectionModel().getSelectedItem() == null) {
                 editPlaylistButton.setDisable(true);
                 deletePlaylistButton.setDisable(true);
             } else if (!Objects.equals(oldValue, newValue)) {
@@ -319,8 +319,8 @@ public class MyMoviesController {
             }
         });
 
-        songTableView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
-            if (!Objects.equals(oldValue, newValue) && songTableView.getSelectionModel().getSelectedItem() == null) {
+        movieTableView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
+            if (!Objects.equals(oldValue, newValue) && movieTableView.getSelectionModel().getSelectedItem() == null) {
                 editSongButton.setDisable(true);
                 deleteSongButton.setDisable(true);
                 addSongToPlaylistButton.setDisable(true);
@@ -331,8 +331,8 @@ public class MyMoviesController {
             }
         });
 
-        songsInPlaylistListView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
-            if (!Objects.equals(oldValue, newValue) && songsInPlaylistListView.getSelectionModel().getSelectedItem() == null) {
+        catMovieListView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
+            if (!Objects.equals(oldValue, newValue) && catMovieListView.getSelectionModel().getSelectedItem() == null) {
                 moveSongUpButton.setDisable(true);
                 moveSongDownButton.setDisable(true);
                 deleteSongFromPlaylistButton.setDisable(true);
@@ -382,15 +382,15 @@ public class MyMoviesController {
 
         //Updates selection and focus toward currently playing song.
         if (player.getListStatus() == Player.ListStatus.ALL_SONGS) {
-            songTableView.getSelectionModel().select(player.getCurrentSong());
-            songTableView.requestFocus();
-            songTableView.scrollTo(player.getCurrentSong());
-            selectedSong = songTableView.getSelectionModel().getSelectedItem();
+            movieTableView.getSelectionModel().select(player.getCurrentSong());
+            movieTableView.requestFocus();
+            movieTableView.scrollTo(player.getCurrentSong());
+            selectedMovie = movieTableView.getSelectionModel().getSelectedItem();
         } else if (player.getListStatus() == Player.ListStatus.PLAYLIST) {
-            songsInPlaylistListView.getSelectionModel().select(player.getCurrentSong());
-            songsInPlaylistListView.requestFocus();
-            songsInPlaylistListView.scrollTo(player.getCurrentSong());
-            selectedSongInPlaylist = songsInPlaylistListView.getSelectionModel().getSelectedItem();
+            catMovieListView.getSelectionModel().select(player.getCurrentSong());
+            catMovieListView.requestFocus();
+            catMovieListView.scrollTo(player.getCurrentSong());
+            selectedMovieInPlaylist = catMovieListView.getSelectionModel().getSelectedItem();
         }
 
         //Updates all relevant labels for currently playing song.
@@ -409,26 +409,26 @@ public class MyMoviesController {
         });
     }
 
-    public SongsManager getSongsManager() {
-        return songsManager;
+    public MovieManager getSongsManager() {
+        return movieManager;
     }
 
-    public PlaylistsManager getPlaylistsManager() {
-        return playlistsManager;
+    public CategoryManager getPlaylistsManager() {
+        return categoryManager;
     }
 
     private void showNewEditSongWindow() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/NewEditSong.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/NewEditMovie.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            NewEditSongController newEditSongController = fxmlLoader.getController();
-            newEditSongController.setMyTunesController(this);
+            NewEditMovieController newEditMovieController = fxmlLoader.getController();
+            newEditMovieController.setMyController(this);
             Stage stage = new Stage();
             if (isNewPressed) {
-                stage.getIcons().add(new Image("file:src/main/resources/com/mytunes/images/add.png"));
+                stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/add.png"));
                 stage.setTitle("New Song");
             } else {
-                stage.getIcons().add(new Image("file:src/main/resources/com/mytunes/images/edit.png"));
+                stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/edit.png"));
                 stage.setTitle("Edit Song");
             }
             stage.setResizable(false);
@@ -477,16 +477,16 @@ public class MyMoviesController {
 
     private void showNewEditPlaylistWindow() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/NewEditPlaylist.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/NewEditCategory.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            NewEditPlaylistController newEditPlaylistController = fxmlLoader.getController();
-            newEditPlaylistController.setMyTunesController(this);
+            NewEditCategoryController newEditCategoryController = fxmlLoader.getController();
+            newEditCategoryController.setMyController(this);
             Stage stage = new Stage();
             if (isNewPressed) {
-                stage.getIcons().add(new Image("file:src/main/resources/com/mytunes/images/add.png"));
+                stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/add.png"));
                 stage.setTitle("New Playlist");
             } else {
-                stage.getIcons().add(new Image("file:src/main/resources/com/mytunes/images/edit.png"));
+                stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/edit.png"));
                 stage.setTitle("Edit Playlist");
             }
             stage.setResizable(false);
@@ -510,29 +510,29 @@ public class MyMoviesController {
     private void editSong() {
         isNewPressed = false;
         showNewEditSongWindow();
-        songObservableList.setAll(songsManager.getAllSongs());
+        movieObservableList.setAll(movieManager.getAllSongs());
     }
 
     private void deleteSong() {
         Optional<ButtonType> result = showAlertWindow("Are you sure you wish to delete this song?");
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            songsManager.removeSong(selectedSong);
-            songObservableList.setAll(songsManager.getAllSongs());
+            movieManager.removeSong(selectedMovie);
+            movieObservableList.setAll(movieManager.getAllSongs());
             //Loops through and deletes all copies of the deleted song from each playlist.
-            for (int i = 0; i < playlistsManager.getAllPlaylists().size(); i++) {
-                playlistsManager.getAllPlaylists().get(i).getSongs().removeIf(s -> s.getId() == selectedSong.getId());
+            for (int i = 0; i < categoryManager.getAllPlaylists().size(); i++) {
+                categoryManager.getAllPlaylists().get(i).getMovies().removeIf(s -> s.getId() == selectedMovie.getId());
             }
 
             //Updates Playlist and SongsInPlaylist lists.
-            playlistObservableList.setAll(playlistsManager.getAllPlaylists());
-            if (selectedPlaylist != null) {
-                songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
+            categoryObservableList.setAll(categoryManager.getAllPlaylists());
+            if (selectedCategory != null) {
+                movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
             }
 
             //Sends new versions of the lists to the Player.
-            player.updateCurrentPlaylist(selectedPlaylist);
-            player.updateCurrentAllSongs(songObservableList);
+            player.updateCurrentPlaylist(selectedCategory);
+            player.updateCurrentAllSongs(movieObservableList);
         }
     }
 
@@ -540,12 +540,12 @@ public class MyMoviesController {
         Optional<ButtonType> result = showAlertWindow("Are you sure you wish to delete this song from the playlist?");
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            selectedPlaylist.removeSong(selectedSongInPlaylist);
-            songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
-            playlistObservableList.setAll(playlistsManager.getAllPlaylists());
-            player.updateCurrentPlaylist(selectedPlaylist);
-            if (player.getCurrentPlaylist() == selectedPlaylist && player.getListStatus() == Player.ListStatus.PLAYLIST && selectedPlaylist.getSongs().size() == 0) {
-                player.load(songObservableList, songObservableList.get(0));
+            selectedCategory.removeMovie(selectedMovieInPlaylist);
+            movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
+            categoryObservableList.setAll(categoryManager.getAllPlaylists());
+            player.updateCurrentPlaylist(selectedCategory);
+            if (player.getCurrentPlaylist() == selectedCategory && player.getListStatus() == Player.ListStatus.PLAYLIST && selectedCategory.getMovies().size() == 0) {
+                player.load(movieObservableList, movieObservableList.get(0));
             }
         }
     }
@@ -553,20 +553,20 @@ public class MyMoviesController {
     private void editPlaylist() {
         isNewPressed = false;
         showNewEditPlaylistWindow();
-        playlistObservableList.setAll(playlistsManager.getAllPlaylists());
+        categoryObservableList.setAll(categoryManager.getAllPlaylists());
     }
 
     private void deletePlaylist() {
         Optional<ButtonType> result = showAlertWindow("Are you sure you wish to delete this playlist?");
 
         if (result.isPresent() && result.get() == ButtonType.YES) {
-            playlistsManager.removePlaylist(selectedPlaylist);
-            playlistObservableList.setAll(playlistsManager.getAllPlaylists());
-            selectedPlaylist.getSongs().clear();
-            songInPlaylistObservableList.setAll(selectedPlaylist.getSongs());
+            categoryManager.removePlaylist(selectedCategory);
+            categoryObservableList.setAll(categoryManager.getAllPlaylists());
+            selectedCategory.getMovies().clear();
+            movieInPlaylistObservableList.setAll(selectedCategory.getMovies());
             //If the playlist that is getting deleted is currently loaded, then switch the player to load the first song on the all songs list.
-            if (player.getCurrentPlaylist() == selectedPlaylist && player.getListStatus() == Player.ListStatus.PLAYLIST) {
-                player.load(songObservableList, songObservableList.get(0));
+            if (player.getCurrentPlaylist() == selectedCategory && player.getListStatus() == Player.ListStatus.PLAYLIST) {
+                player.load(movieObservableList, movieObservableList.get(0));
             }
         }
     }
