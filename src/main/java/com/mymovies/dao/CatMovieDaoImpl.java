@@ -1,6 +1,7 @@
 package com.mymovies.dao;
 
 import com.mymovies.model.Movie;
+import javafx.scene.control.CheckBox;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class CatMovieDaoImpl implements CatMovieDao {
     public List<Movie> getCategory(int categoryId) {
         List<Movie> categories = new ArrayList<>();
         try (Connection connection = databaseConnector.getConnection()) {
-            String sql = "SELECT CatMovie.categoryID, Movies.movieID, Movies.title, Movies.artist, Movies.category, Movies.duration, Movirs.path " +
+            String sql = "SELECT CatMovie.categoryID, Movies.movieID, Movies.title, Movies.director, Movies.rating, Movies.lastview, Movies.movie_path, Movies.trailer_path, Movies.year, Movies.imdb_score, Movies.fav " +
                          "FROM CatMovie " +
                          "INNER JOIN Movies " +
                          "ON CatMovie.movieID = Movies.movieID " +
@@ -35,12 +36,18 @@ public class CatMovieDaoImpl implements CatMovieDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("movieID");
                     String title = resultSet.getString("title");
-                    String artist = resultSet.getString("artist");
-                    String category = resultSet.getString("category");
-                    int duration = resultSet.getInt("duration");
-                    String path = resultSet.getString("path");
+                    String director = resultSet.getString("director");
+                    Float rating = resultSet.getFloat("rating");
+                    Date lastview = resultSet.getDate("lastview");
+                    String moviePath = resultSet.getString("movie_path");
+                    String trailerPath = resultSet.getString("trailer_path");
+                    int year = resultSet.getInt("year");
+                    Float imdbScore = resultSet.getFloat("imdb_score");
+                    boolean fav = resultSet.getBoolean("fav");
+                    CheckBox like = null;
+                    like.setSelected(fav);
 
-                    Movie movie = new Movie(id, title, artist, category, duration, path);
+                    Movie movie = new Movie(id, title, director, rating, lastview, moviePath, trailerPath, year, imdbScore, like);
                     categories.add(movie);
                 }
             }

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="650.0" prefWidth="1070.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mymovies.controllers.ListController">
+   <children>
+      <HBox spacing="6.0" VBox.vgrow="ALWAYS">
+         <children>
+            <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <GridPane hgap="6.0">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="BOTTOM_LEFT" focusTraversable="false" maxHeight="1.7976931348623157E308" text="All categories">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                           <padding>
+                              <Insets top="16.0" />
+                           </padding>
+                        </Label>
+                        <Button cache="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddCategory" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1">
+                           <graphic>
+                              <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="editCategoryButton" cache="true" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleEditCategory" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="2">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/edit.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="deleteCategoryButton" cache="true" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeleteCategory" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="3">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/delete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </GridPane>
+                  <TableView fx:id="categoryTableView" onMouseClicked="#handlePlaylistClick" prefWidth="250.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="190.0" text="Name" />
+                      <TableColumn fx:id="moviesColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="67.0" text="Quantity" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+            <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <GridPane hgap="6.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="BOTTOM_LEFT" focusTraversable="false" maxHeight="1.7976931348623157E308" text="Movies in category">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                           <padding>
+                              <Insets top="16.0" />
+                           </padding>
+                        </Label>
+                        <Button fx:id="moveSongUpButton" cache="true" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleMoveSongUp" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1">
+                           <graphic>
+                              <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/up.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="moveSongDownButton" cache="true" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleMoveSongDown" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="2">
+                           <graphic>
+                              <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="deleteSongFromPlaylistButton" cache="true" disable="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeleteMovieFromCategory" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="3">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/delete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </GridPane>
+                  <ListView fx:id="catMovieListView" onMouseClicked="#handleSongInPlaylistClick" prefWidth="250.0" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+            <Button fx:id="addMovieToCategoryButton" cache="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddMovieToCategory" prefHeight="30.0" prefWidth="30.0">
+               <HBox.margin>
+                  <Insets top="36.0" />
+               </HBox.margin>
+               <graphic>
+                  <ImageView fitHeight="13.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/left.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <GridPane hgap="6.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="5.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="175.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="30.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="BOTTOM_LEFT" focusTraversable="false" maxHeight="1.7976931348623157E308" text=" All movies">
+                           <font>
+                              <Font name="Arial" size="14.0" />
+                           </font>
+                           <padding>
+                              <Insets top="16.0" />
+                           </padding>
+                        </Label>
+                        <Button cache="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddMovie" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="1">
+                           <graphic>
+                              <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="editMovieButton" cache="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleEditMovie" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="2">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/edit.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="deleteMovieButton" cache="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleDeleteMovie" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="3">
+                           <graphic>
+                              <ImageView fitHeight="18.0" fitWidth="18.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/delete.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button cache="true" focusTraversable="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleSearch" prefHeight="30.0" prefWidth="30.0" GridPane.columnIndex="6">
+                           <graphic>
+                              <ImageView fx:id="searchUnsearchImage" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/search.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <TextField fx:id="searchTextField" cache="true" focusTraversable="false" prefHeight="30.0" GridPane.columnIndex="5">
+                           <cursor>
+                              <Cursor fx:constant="TEXT" />
+                           </cursor>
+                        </TextField>
+                     </children>
+                  </GridPane>
+                  <TableView fx:id="movieTableView" onMouseClicked="#handleSongClick" prefWidth="400.0" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="titleCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="151.0" text="Title" />
+                      <TableColumn fx:id="directorCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="145.0" text="Director" />
+                        <TableColumn fx:id="ratingCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="60.0" text="Rating" />
+                        <TableColumn fx:id="lastviewCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="85.0" text="Last seen" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </children>
+         <VBox.margin>
+            <Insets bottom="8.0" />
+         </VBox.margin>
+      </HBox>
+      <ButtonBar prefHeight="40.0" prefWidth="200.0">
+        <buttons>
+            <Button mnemonicParsing="false" text="Button" />
+          <Button mnemonicParsing="false" onAction="#handlePlayMedia" text="Play" />
+        </buttons>
+      </ButtonBar>
+   </children>
+   <padding>
+      <Insets bottom="12.0" left="12.0" right="12.0" top="6.0" />
+   </padding>
+</VBox>

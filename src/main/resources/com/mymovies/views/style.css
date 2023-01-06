@@ -44,3 +44,20 @@
     -fx-border-color: transparent;
     -fx-table-cell-border-color: transparent;
 }
+
+.check-box>.box {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: transparent;
+}
+
+.check-box>.box>.mark {
+    -fx-background-image: url("unmarked2.png");
+    -fx-background-repeat: stretch;
+    -fx-shape: none;
+}
+
+.check-box:selected>.box>.mark{
+    -fx-background-color: transparent;
+    -fx-background-image: url("marked2.png");
+}

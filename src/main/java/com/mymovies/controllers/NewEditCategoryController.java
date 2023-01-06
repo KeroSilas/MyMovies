@@ -7,8 +7,6 @@ import javafx.stage.Stage;
 
 public class NewEditCategoryController {
 
-    private MyMoviesController myController;
-
     @FXML private Button cancelButton, saveButton;
 
     @FXML private TextField nameTextField;
@@ -19,22 +17,18 @@ public class NewEditCategoryController {
     }
 
     @FXML void handleSave() {
-        if (MyMoviesController.isNewPressed)
-            myController.getPlaylistsManager().addPlaylist(nameTextField.getText());
+        if (ListController.isNewPressed)
+            ListController.getCategoryManager().addCategory(nameTextField.getText());
         else
-            myController.getPlaylistsManager().updatePlaylist(MyMoviesController.selectedCategory, nameTextField.getText());
+            ListController.getCategoryManager().updateCategory(ListController.selectedCategory, nameTextField.getText());
 
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
     }
 
     public void initialize() {
-        if (!MyMoviesController.isNewPressed) {
-            nameTextField.setText(MyMoviesController.selectedCategory.getName());
+        if (!ListController.isNewPressed) {
+            nameTextField.setText(ListController.selectedCategory.getName());
         }
-    }
-
-    public void setMyController(MyMoviesController myController) {
-        this.myController = myController;
     }
 }

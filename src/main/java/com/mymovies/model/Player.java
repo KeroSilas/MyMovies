@@ -1,11 +1,13 @@
 package com.mymovies.model;
 
 import javafx.beans.property.*;
+import javafx.scene.control.CheckBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.nio.file.Path;
+import java.sql.Date;
 import java.util.*;
 
 /**
@@ -32,14 +34,18 @@ public class Player {
 
     //Enum list that are used to specify whether the player is playing from a playlist or the all-songs list.
     public enum ListStatus {
-        ALL_SONGS,
-        PLAYLIST,
+        ALL_MOVIES,
+        CATEGORY,
     }
 
     //Default constructor for when there are no songs.
     public Player() {
-        path = Path.of("src/main/resources/com/mytunes/music/default.mp3");
+        path = Path.of("src/main/resources/com/mymovies/trailers/The Dark Knight Trailer.mp4");
         load(path);
+
+        CheckBox like = new CheckBox();
+        like.setSelected(Boolean.TRUE);
+        currentMovie = new Movie(2, "Test", "Test", 9.0F, Date.valueOf("2009-12-12"), "src/main/resources/com/mymovies/trailers/The Dark Knight Trailer.mp4", "src/main/resources/com/mymovies/trailers/The Dark Knight Trailer.mp4", 0, 0.0F, like);
     }
 
     //Constructor for when songs list is not empty.
@@ -64,7 +70,7 @@ public class Player {
 
         mediaPlayer.dispose(); //Removes the previous MediaPlayer object, as a new one will be created from the next load.
 
-        path = Path.of("src/main/resources/com/mytunes/music/", movie.getPath());
+        path = Path.of(movie.getMoviePath());
         load(path);
 
         //Reapplies player values from before.
@@ -82,7 +88,7 @@ public class Player {
 
     //Used when clicking a song on the all songs list.
     public void load(List<Movie> movies, Movie movie) {
-        setListStatus(ListStatus.ALL_SONGS);
+        setListStatus(ListStatus.ALL_MOVIES);
         load(movie);
 
         //Resets shuffle algorithm.
@@ -100,7 +106,7 @@ public class Player {
 
     //Used when clicking a song on a playlist.
     public void load(Category category, Movie movie) {
-        setListStatus(ListStatus.PLAYLIST);
+        setListStatus(ListStatus.CATEGORY);
         load(movie);
 
         //Resets shuffle algorithm.
@@ -127,26 +133,26 @@ public class Player {
 
     //Loads next song on either the all songs list or the currently playing playlist.
     public void next() {
-        if (getListStatus() == Player.ListStatus.ALL_SONGS) {
+        if (getListStatus() == Player.ListStatus.ALL_MOVIES) {
             if (isShuffling()) {
                 load(allMovies.get(shuffleNumbers.get(0)));
                 shuffleNumbers.add(shuffleNumbers.get(0));
                 shuffleNumbers.remove(0);
-            } else if (allMovies.indexOf(getCurrentSong()) == allMovies.size() - 1) { //Checks if current song is at the end of the list.
+            } else if (allMovies.indexOf(getCurrentMovie()) == allMovies.size() - 1) { //Checks if current song is at the end of the list.
                 load(allMovies.get(0)); //Returns to first song on the list.
             } else {
-                Movie nextMovie = allMovies.get(allMovies.indexOf(getCurrentSong()) + 1); //Gets next song on the list.
+                Movie nextMovie = allMovies.get(allMovies.indexOf(getCurrentMovie()) + 1); //Gets next song on the list.
                 load(nextMovie);
             }
-        } else if (getListStatus() == Player.ListStatus.PLAYLIST) {
+        } else if (getListStatus() == Player.ListStatus.CATEGORY) {
             if (isShuffling()) {
                 load(currentCategory.getMovies().get(shuffleNumbers.get(0)));
                 shuffleNumbers.add(shuffleNumbers.get(0));
                 shuffleNumbers.remove(0);
-            } else if (currentCategory.getMovies().indexOf(getCurrentSong()) == currentCategory.getMovies().size() - 1) {
+            } else if (currentCategory.getMovies().indexOf(getCurrentMovie()) == currentCategory.getMovies().size() - 1) {
                 load(currentCategory.getMovies().get(0));
             } else {
-                Movie nextMovie = currentCategory.getMovies().get(currentCategory.getMovies().indexOf(getCurrentSong()) + 1);
+                Movie nextMovie = currentCategory.getMovies().get(currentCategory.getMovies().indexOf(getCurrentMovie()) + 1);
                 load(nextMovie);
             }
         }
@@ -156,18 +162,18 @@ public class Player {
     public void previous() {
         if (getCurrentTime().toSeconds() > 3) { //Checks if less than 3 seconds have passed.
             reset(); //Resets currently playing song.
-        } else if (getListStatus() == Player.ListStatus.ALL_SONGS) {
-            if (allMovies.indexOf(getCurrentSong()) == 0) { //Checks if current song is at the start of the list.
+        } else if (getListStatus() == Player.ListStatus.ALL_MOVIES) {
+            if (allMovies.indexOf(getCurrentMovie()) == 0) { //Checks if current song is at the start of the list.
                 reset();
             } else {
-                Movie previousMovie = allMovies.get(allMovies.indexOf(getCurrentSong()) - 1); //Gets previous song on the list.
+                Movie previousMovie = allMovies.get(allMovies.indexOf(getCurrentMovie()) - 1); //Gets previous song on the list.
                 load(previousMovie);
             }
-        } else if (getListStatus() == Player.ListStatus.PLAYLIST) {
-            if (currentCategory.getMovies().indexOf(getCurrentSong()) == 0) {
+        } else if (getListStatus() == Player.ListStatus.CATEGORY) {
+            if (currentCategory.getMovies().indexOf(getCurrentMovie()) == 0) {
                 reset();
             } else {
-                Movie previousMovie = currentCategory.getMovies().get(currentCategory.getMovies().indexOf(getCurrentSong()) - 1);
+                Movie previousMovie = currentCategory.getMovies().get(currentCategory.getMovies().indexOf(getCurrentMovie()) - 1);
                 load(previousMovie);
             }
         }
@@ -202,17 +208,25 @@ public class Player {
         return mediaPlayer.getCurrentTime();
     }
 
-    public Movie getCurrentSong() {
+    public Duration getTotalTime() {
+        return mediaPlayer.getTotalDuration();
+    }
+
+    public Movie getCurrentMovie() {
         return currentMovie;
     }
 
-    public Category getCurrentPlaylist() {
+    public Category getCurrentCategory() {
         return currentCategory;
     }
 
     //Used to retrieve metadata in MyTunesController.
     public Media getMedia() {
         return mediaPlayer.getMedia();
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
     }
 
     public ListStatus getListStatus() {
@@ -250,11 +264,11 @@ public class Player {
         return mediaPlayer.isMute();
     }
 
-    public void updateCurrentPlaylist(Category category) {
+    public void updateCurrentCategory(Category category) {
         currentCategory = category;
     }
 
-    public void updateCurrentAllSongs(List<Movie> allMovies) {
+    public void updateCurrentAllMovies(List<Movie> allMovies) {
         this.allMovies = allMovies;
     }
 
@@ -272,5 +286,9 @@ public class Player {
 
     public void setOnPlaying(Runnable runnable) {
         mediaPlayer.setOnPlaying(runnable);
+    }
+
+    public void setOnReady(Runnable runnable) {
+        mediaPlayer.setOnReady(runnable);
     }
 }

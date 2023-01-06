@@ -59,16 +59,16 @@ public class Category {
     }
 
     //Returns the playlist duration in seconds.
-    private int getDurationInInteger() {
+    /*private int getDurationInInteger() {
         int duration = 0;
         for (Movie movie : movies) {
             duration += movie.getDurationInInteger();
         }
         return duration;
-    }
+    }*/
 
     //Returns the playlist duration in a string such as this: "02:32:23".
-    public String getDurationInString() {
+    /*public String getDurationInString() {
         int duration = getDurationInInteger();
         int hours = duration / 3600;
         int minutes = (duration / 60) % 60;
@@ -77,9 +77,14 @@ public class Category {
             return String.format("%02d:%02d", minutes, seconds);
         else
             return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    }
+    }*/
 
     public int getNumberOfMovies() {
         return movies.size();
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

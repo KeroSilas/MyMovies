@@ -1,12 +1,14 @@
 package com.mymovies.controllers;
 
-import javafx.collections.MapChangeListener;
+import com.mymovies.model.Category;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -14,77 +16,94 @@ import java.io.File;
 
 public class NewEditMovieController {
 
-    private MyMoviesController myController;
-    private int duration;
+    private final ObservableList<Category> categoryObservableList = FXCollections.observableArrayList();
 
     @FXML private GridPane gridPane;
 
-    @FXML private TextField titleTextField, artistTextField, categoryTextField, durationTextField, fileTextField;
+    @FXML private TextField titleTextField, directorTextField, ratingTextField, moviePathTextField, trailerPathTextField, yearTextField, imdbTextField, categoryTextField;
 
     @FXML private Button cancelButton, saveButton;
+
+    @FXML private ChoiceBox<Category> categoryChoiceBox;
+
+    @FXML void handleCategoryAdd() {
+
+    }
 
     @FXML void handleCancel() {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
     }
 
-    @FXML void handleChooseSong() {
+    @FXML void handleChooseMovie() {
         Stage stage = (Stage) gridPane.getScene().getWindow();
         FileChooser chooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Audio files", "*.mp3", "*.wav");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Video files", "*.mp4");
         chooser.getExtensionFilters().add(extFilter);
-        chooser.setInitialDirectory(new File("src/main/resources/com/mytunes/music/"));
+        chooser.setInitialDirectory(new File("src/main/resources/com/mymovies/movies/"));
         File file = chooser.showOpenDialog(stage);
 
         if (file != null) {
-            Media media = new Media(file.toURI().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
+            moviePathTextField.setText(file.getPath());
+        }
+    }
 
-            fileTextField.setText(file.getName());
+    @FXML void handleChooseTrailer() {
+        Stage stage = (Stage) gridPane.getScene().getWindow();
+        FileChooser chooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Video files", "*.mp4");
+        chooser.getExtensionFilters().add(extFilter);
+        chooser.setInitialDirectory(new File("src/main/resources/com/mymovies/trailers/"));
+        File file = chooser.showOpenDialog(stage);
 
-            media.getMetadata().addListener((MapChangeListener.Change<? extends String, ?> c) -> {
-                if (c.wasAdded()) {
-                    if ("title".equals(c.getKey())) {
-                        titleTextField.setText(c.getValueAdded().toString());
-                    } else if ("artist".equals(c.getKey())) {
-                        artistTextField.setText(c.getValueAdded().toString());
-                    } else if ("genre".equals(c.getKey())) {
-                        categoryTextField.setText(c.getValueAdded().toString());
-                    }
-                }
-            });
-
-            mediaPlayer.setOnReady(() -> {
-                duration = (int) mediaPlayer.getTotalDuration().toSeconds();
-                int minutes = (duration % 3600) / 60;
-                int seconds = duration % 60;
-                durationTextField.setText(String.format("%02d:%02d", minutes, seconds));
-            });
+        if (file != null) {
+            trailerPathTextField.setText(file.getPath());
         }
     }
 
     @FXML void handleSave() {
-        if (MyMoviesController.isNewPressed)
-            myController.getSongsManager().addSong(titleTextField.getText(), artistTextField.getText(), categoryTextField.getText(), duration, fileTextField.getText());
+        CheckBox like = new CheckBox();
+        like.setSelected(false);
+
+        if (ListController.isNewPressed)
+            ListController.getMovieManager().addMovie(
+                    titleTextField.getText(),
+                    directorTextField.getText(),
+                    Float.valueOf(ratingTextField.getText()),
+                    null,
+                    moviePathTextField.getText(),
+                    trailerPathTextField.getText(),
+                    Integer.parseInt(yearTextField.getText()),
+                    Float.parseFloat(imdbTextField.getText()),
+                    like);
         else
-            myController.getSongsManager().updateSong(MyMoviesController.selectedMovie, titleTextField.getText(), artistTextField.getText(), categoryTextField.getText(), duration, fileTextField.getText());
+            ListController.getMovieManager().updateMovie(
+                    ListController.selectedMovie,
+                    titleTextField.getText(),
+                    directorTextField.getText(),
+                    Float.valueOf(ratingTextField.getText()),
+                    null,
+                    moviePathTextField.getText(),
+                    trailerPathTextField.getText(),
+                    Integer.parseInt(yearTextField.getText()),
+                    Float.parseFloat(imdbTextField.getText()));
 
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
     }
 
     public void initialize() {
-        if (!MyMoviesController.isNewPressed) {
-            titleTextField.setText(MyMoviesController.selectedMovie.getTitle());
-            artistTextField.setText(MyMoviesController.selectedMovie.getArtist());
-            categoryTextField.setText(MyMoviesController.selectedMovie.getCategory());
-            durationTextField.setText(MyMoviesController.selectedMovie.getDurationInString());
-            duration = MyMoviesController.selectedMovie.getDurationInInteger();
-            fileTextField.setText(MyMoviesController.selectedMovie.getPath());
-        }
-    }
+        categoryObservableList.addAll(ListController.getCategoryManager().getAllCategories());
+        categoryChoiceBox.setItems(categoryObservableList);
 
-    public void setMyController(MyMoviesController myController) {
-        this.myController = myController;
+        if (!ListController.isNewPressed) {
+            titleTextField.setText(ListController.selectedMovie.getTitle());
+            directorTextField.setText(ListController.selectedMovie.getDirector());
+            ratingTextField.setText(String.valueOf(ListController.selectedMovie.getRating()));
+            moviePathTextField.setText(ListController.selectedMovie.getMoviePath());
+            trailerPathTextField.setText(ListController.selectedMovie.getTrailerPath());
+            yearTextField.setText(String.valueOf(ListController.selectedMovie.getYear()));
+            imdbTextField.setText(String.valueOf(ListController.selectedMovie.getImdbScore()));
+        }
     }
 }

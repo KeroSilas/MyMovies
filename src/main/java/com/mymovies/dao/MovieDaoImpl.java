@@ -1,6 +1,7 @@
 package com.mymovies.dao;
 
 import com.mymovies.model.Movie;
+import javafx.scene.control.CheckBox;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -30,12 +31,18 @@ public class MovieDaoImpl implements MovieDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("movieID");
                     String title = resultSet.getString("title");
-                    String artist = resultSet.getString("artist");
-                    String category = resultSet.getString("category");
-                    int duration = resultSet.getInt("duration");
-                    String path = resultSet.getString("path");
+                    String director = resultSet.getString("director");
+                    Float rating = resultSet.getFloat("rating");
+                    Date lastview = resultSet.getDate("lastview");
+                    String moviePath = resultSet.getString("movie_path");
+                    String trailerPath = resultSet.getString("trailer_path");
+                    int year = resultSet.getInt("year");
+                    Float imdbScore = resultSet.getFloat("imdb_score");
+                    boolean fav = resultSet.getBoolean("fav");
+                    CheckBox like = new CheckBox();
+                    like.setSelected(fav);
 
-                    Movie movie = new Movie(id, title, artist, category, duration, path);
+                    Movie movie = new Movie(id, title, director, rating, lastview, moviePath, trailerPath, year, imdbScore, like);
                     movies.add(movie);
                 }
             }
@@ -60,16 +67,45 @@ public class MovieDaoImpl implements MovieDao {
 
     //Updates a song's values.
     @Override
-    public void updateMovie(int id, String title, String artist, String category, int duration, String path) {
+    public void updateMovie(int id, String title, String director, Float rating, Date lastview, String moviePath, String trailerPath, int year, Float imdbScore) {
         try (Connection connection = databaseConnector.getConnection()) {
-            String sql = "UPDATE Movies SET title = ?, artist = ?, category = ?, duration = ?, path = ? WHERE movieID = ?;";
+            String sql = "UPDATE Movies SET title = ?, director = ?, rating = ?, lastview = ?, movie_path = ?, trailer_path = ?, year = ?, imdb_score = ?, fav = ? WHERE movieID = ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, title);
-            statement.setString(2, artist);
-            statement.setString(3, category);
-            statement.setInt(4, duration);
-            statement.setString(5, path);
-            statement.setInt(6, id);
+            statement.setString(2, director);
+            statement.setFloat(3, rating);
+            statement.setDate(4, lastview);
+            statement.setString(5, moviePath);
+            statement.setString(6, trailerPath);
+            statement.setInt(7, year);
+            statement.setFloat(8, imdbScore);
+            statement.setInt(9, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateMovieLike(int id, int like) {
+        try (Connection connection = databaseConnector.getConnection()) {
+            String sql = "UPDATE Movies SET fav = ? WHERE movieID = ?;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, like);
+            statement.setInt(2, id);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateMovieLastview(int id, Date lastview) {
+        try (Connection connection = databaseConnector.getConnection()) {
+            String sql = "UPDATE Movies SET lastview = ? WHERE movieID = ?;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setDate(1, lastview);
+            statement.setInt(2, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -79,16 +115,20 @@ public class MovieDaoImpl implements MovieDao {
     //Creates a new song.
     //Also returns an int value for the ID of the song that was just created.
     @Override
-    public int createMovie(String title, String artist, String category, int duration, String path) {
+    public int createMovie(String title, String director, Float rating, Date lastview, String moviePath, String trailerPath, int year, Float imdbScore, CheckBox like) {
         int movieId = 0;
         try (Connection connection = databaseConnector.getConnection()) {
-            String sql = "INSERT INTO Movies (title, artist, category, duration, path) VALUES (?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO Movies (title, director, rating, lastview, movie_path, trailer_path, year, imdb_score, fav) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, title);
-            statement.setString(2, artist);
-            statement.setString(3, category);
-            statement.setInt(4, duration);
-            statement.setString(5, path);
+            statement.setString(2, director);
+            statement.setFloat(3, rating);
+            statement.setDate(4, lastview);
+            statement.setString(5, moviePath);
+            statement.setString(6, trailerPath);
+            statement.setInt(7, year);
+            statement.setFloat(8, imdbScore);
+            statement.setBoolean(9, like.isSelected());
             statement.executeUpdate();
             ResultSet generatedKey = statement.getGeneratedKeys();
             if (generatedKey.next())
@@ -104,7 +144,7 @@ public class MovieDaoImpl implements MovieDao {
     public List<Movie> searchMovie(String search) {
         List<Movie> movies = new ArrayList<>();
         try (Connection connection = databaseConnector.getConnection()) {
-            String sql = "SELECT * FROM Movies WHERE title LIKE ? OR artist LIKE ?;";
+            String sql = "SELECT * FROM Movies WHERE title LIKE ? OR director LIKE ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, "%" + search + "%");
             statement.setString(2, "%" + search + "%");
@@ -113,12 +153,18 @@ public class MovieDaoImpl implements MovieDao {
                 while (resultSet.next()) {
                     int id = resultSet.getInt("movieID");
                     String title = resultSet.getString("title");
-                    String artist = resultSet.getString("artist");
-                    String category = resultSet.getString("category");
-                    int duration = resultSet.getInt("duration");
-                    String path = resultSet.getString("path");
+                    String director = resultSet.getString("director");
+                    Float rating = resultSet.getFloat("rating");
+                    Date lastview = resultSet.getDate("lastview");
+                    String moviePath = resultSet.getString("movie_path");
+                    String trailerPath = resultSet.getString("trailer_path");
+                    int year = resultSet.getInt("year");
+                    Float imdbScore = resultSet.getFloat("imdb_score");
+                    boolean fav = resultSet.getBoolean("fav");
+                    CheckBox like = new CheckBox();
+                    like.setSelected(fav);
 
-                    Movie movie = new Movie(id, title, artist, category, duration, path);
+                    Movie movie = new Movie(id, title, director, rating, lastview, moviePath, trailerPath, year, imdbScore, like);
                     movies.add(movie);
                 }
             }

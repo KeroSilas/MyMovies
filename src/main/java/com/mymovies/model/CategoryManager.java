@@ -27,18 +27,18 @@ public class CategoryManager {
         }
     }
 
-    public List<Category> getAllPlaylists() {
+    public List<Category> getAllCategories() {
         return allCategories;
     }
 
     //Creates a new playlist both locally and on the database.
-    public void addPlaylist(String name) {
-        int playlistId = categoryDao.createCategory(name);
-        allCategories.add(new Category(playlistId, name));
+    public void addCategory(String name) {
+        int categoryId = categoryDao.createCategory(name);
+        allCategories.add(new Category(categoryId, name));
     }
 
     //Updates a playlist both locally and on the database.
-    public void updatePlaylist(Category category, String name) {
+    public void updateCategory(Category category, String name) {
         for (Category p : allCategories) {
             if (p.getId() == category.getId())
                 allCategories.get(allCategories.indexOf(p)).setName(name);
@@ -47,7 +47,7 @@ public class CategoryManager {
     }
 
     //Removes a playlist both locally and on the database.
-    public void removePlaylist(Category category) {
+    public void removeCategory(Category category) {
         allCategories.removeIf(p -> p.getId() == category.getId());
         categoryDao.deleteCategory(category.getId());
     }
