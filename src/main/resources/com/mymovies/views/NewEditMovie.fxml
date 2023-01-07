@@ -34,6 +34,48 @@
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
     </padding>
+    <TextField fx:id="titleTextField" prefHeight="25.0" promptText="Enter the movie title" GridPane.columnIndex="1" GridPane.columnSpan="2147483647">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font></TextField>
+    <TextField fx:id="directorTextField" prefHeight="25.0" promptText="Enter the director" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font></TextField>
+   <TextField fx:id="yearTextField" prefHeight="25.0" promptText="Enter the release year" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font>
+   </TextField>
+    <TextField fx:id="imdbTextField" prefHeight="25.0" promptText="Enter the IMDb rating" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font></TextField>
+   <TextField fx:id="ratingTextField" prefHeight="25.0" promptText="Enter your personal rating (0-10)" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font>
+   </TextField>
+   <ChoiceBox fx:id="categoryChoiceBox" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCategoryAdd" prefHeight="25.0" prefWidth="72.0" text="Add" GridPane.columnIndex="2" GridPane.rowIndex="6">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font>
+   </Button>
+   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleChooseMovie" prefHeight="25.0" prefWidth="72.0" text="Choose..." GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font>
+   </Button>
+    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleChooseTrailer" prefHeight="25.0" prefWidth="72.0" text="Choose..." GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font></Button>
+   <TextField fx:id="moviePathTextField" editable="false" focusTraversable="false" prefHeight="25.0" promptText="Choose a file.." GridPane.columnIndex="1" GridPane.rowIndex="9">
+      <font>
+         <Font name="Arial" size="12.0" />
+      </font>
+   </TextField>
     <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" prefHeight="25.0" prefWidth="72.0" text="Save" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="RIGHT" GridPane.rowIndex="11" GridPane.valignment="BOTTOM">
       <font>
          <Font name="Arial" size="12.0" />
@@ -46,10 +88,6 @@
          <Font name="Arial" size="12.0" />
       </font>
     </Button>
-    <TextField fx:id="titleTextField" prefHeight="25.0" promptText="Enter the movie title" GridPane.columnIndex="1" GridPane.columnSpan="2147483647">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font></TextField>
     <Label text="Title:">
       <font>
          <Font name="Arial" size="12.0" />
@@ -58,45 +96,23 @@
       <font>
          <Font name="Arial" size="12.0" />
       </font></Label>
-    <TextField fx:id="directorTextField" prefHeight="25.0" promptText="Enter the director" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font></TextField>
     <Label text="IMDb rating:" GridPane.rowIndex="3">
       <font>
          <Font name="Arial" size="12.0" />
       </font></Label>
-    <TextField fx:id="imdbTextField" prefHeight="25.0" promptText="Enter the IMDb rating" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font></TextField>
     <Label text="Trailer file:" GridPane.rowIndex="10">
       <font>
          <Font name="Arial" size="12.0" />
       </font></Label>
-    <TextField fx:id="trailerPathTextField" editable="false" prefHeight="25.0" promptText="Choose a file.." GridPane.columnIndex="1" GridPane.rowIndex="10">
+    <TextField fx:id="trailerPathTextField" editable="false" focusTraversable="false" prefHeight="25.0" promptText="Choose a file.." GridPane.columnIndex="1" GridPane.rowIndex="10">
       <font>
          <Font name="Arial" size="12.0" />
       </font></TextField>
-    <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleChooseTrailer" prefHeight="25.0" prefWidth="72.0" text="Choose..." GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="10">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font></Button>
    <Label text="Movie file:" GridPane.rowIndex="9">
       <font>
          <Font name="Arial" size="12.0" />
       </font>
    </Label>
-   <TextField fx:id="moviePathTextField" editable="false" prefHeight="25.0" promptText="Choose a file.." GridPane.columnIndex="1" GridPane.rowIndex="9">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font>
-   </TextField>
-   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleChooseMovie" prefHeight="25.0" prefWidth="72.0" text="Choose..." GridPane.columnIndex="2" GridPane.columnSpan="2147483647" GridPane.rowIndex="9">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font>
-   </Button>
    <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
    <Label text="Release year:" GridPane.rowIndex="2">
       <font>
@@ -108,28 +124,12 @@
          <Font name="Arial" size="12.0" />
       </font>
    </Label>
-   <TextField fx:id="yearTextField" prefHeight="25.0" promptText="Enter the release year" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+   <TextField fx:id="categoryTextField" editable="false" focusTraversable="false" prefHeight="25.0" promptText="Add a category above.." GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
       <font>
          <Font name="Arial" size="12.0" />
       </font>
    </TextField>
-   <TextField fx:id="categoryTextField" prefHeight="25.0" promptText="Add a category above.." GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font>
-   </TextField>
-   <ChoiceBox fx:id="categoryChoiceBox" maxWidth="1.7976931348623157E308" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-   <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleCategoryAdd" prefHeight="25.0" prefWidth="72.0" text="Add" GridPane.columnIndex="2" GridPane.rowIndex="6">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font>
-   </Button>
    <Separator prefWidth="200.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
-   <TextField fx:id="ratingTextField" prefHeight="25.0" promptText="Enter your personal rating (0-10)" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
-      <font>
-         <Font name="Arial" size="12.0" />
-      </font>
-   </TextField>
    <Label text="Personal rating:" GridPane.rowIndex="4">
       <font>
          <Font name="Arial" size="12.0" />

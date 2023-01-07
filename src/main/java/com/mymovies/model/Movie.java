@@ -3,13 +3,20 @@ package com.mymovies.model;
 import javafx.scene.control.CheckBox;
 import javafx.util.Duration;
 
+import com.mymovies.dao.CatMovieDao;
+import com.mymovies.dao.CatMovieDaoImpl;
+
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class that contains a song's id, title, artist, category, duration and path.
  */
 
 public class Movie {
+
+    private final CatMovieDao catMovieDao;
 
     private final int id;
     private String title;
@@ -22,6 +29,8 @@ public class Movie {
     private Float imdbScore;
     private final CheckBox like;
 
+    private List<Category> categories;
+
     public Movie(int id, String title, String director, Float rating, java.sql.Date lastview, String moviePath, String trailerPath, int year, Float imdbScore, CheckBox like) {
         this.id = id;
         this.title = title;
@@ -33,6 +42,40 @@ public class Movie {
         this.year = year;
         this.imdbScore = imdbScore;
         this.like = like;
+
+        catMovieDao = new CatMovieDaoImpl();
+        categories = new ArrayList<>();
+    }
+
+    public void addCategory(Category category) {
+        categories.add(category);
+        catMovieDao.moveMovieToCategory(category.getId(), getId()); //adds the song to the database as well
+    }
+
+    public void removeCategory(Category category) {
+        categories.remove(category);
+        catMovieDao.deleteMovieFromCategory(category.getId(), getId());
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public String getCategoriesInString() {
+        String categoriesString = "";
+
+        if (categories.size() != 0)
+            for (int i = 0; i < categories.size(); i++) {
+                if (i == 0)
+                 categoriesString = categories.get(0).getName();
+                else
+                 categoriesString = categoriesString.concat(", " + categories.get(i).getName());
+            }
+        return categoriesString;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     public int getId() {

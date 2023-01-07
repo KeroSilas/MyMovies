@@ -39,7 +39,8 @@ public class ListController {
     protected static Movie selectedMovie;
 
     @FXML private TableView<Movie> movieTableView;
-    @FXML private TableColumn<Movie, String> titleCol, directorCol, ratingCol, lastviewCol, imdbCol, yearCol, likeCol;
+    @FXML private TableColumn<Movie, String> titleCol, directorCol, ratingCol, lastviewCol, imdbCol, yearCol, categoryCol;
+    @FXML private TableColumn<Movie, Boolean> likeCol;
     @FXML private ChoiceBox<Category> categoryChoiceBox;
 
     @FXML private TextField searchTextField;
@@ -55,6 +56,8 @@ public class ListController {
         if (selectedMovie != null && e.getClickCount() == 2) {
             showPlayerWindow();
         }
+        for (Category c : selectedMovie.getCategories())
+            System.out.println(c.getName());
     }
 
     ///// --- MANAGER OBJECTS CONTROLS --- /////
@@ -89,7 +92,7 @@ public class ListController {
         movieObservableList.setAll(movieManager.getAllMovies());
     }
 
-    @FXML void handleAddMovieToCategory() {
+    /*@FXML void handleAddMovieToCategory() {
         boolean containsDuplicate = false;
         if (selectedCategory != null && selectedMovie != null) {
             for (Movie s : selectedCategory.getMovies()) {
@@ -108,7 +111,7 @@ public class ListController {
             selectedCategory.addMovie(selectedMovie);
             categoryObservableList.setAll(categoryManager.getAllCategories());
         }
-    }
+    }*/
 
     @FXML void handlePlayMovie() {
         showPlayerWindow();
@@ -151,6 +154,7 @@ public class ListController {
         yearCol.setCellValueFactory(new PropertyValueFactory<>("Year"));
         imdbCol.setCellValueFactory(new PropertyValueFactory<>("ImdbScore"));
         likeCol.setCellValueFactory(new PropertyValueFactory<>("Like"));
+        categoryCol.setCellValueFactory(new PropertyValueFactory<>("CategoriesInString"));
 
         movieObservableList.addAll(movieManager.getAllMovies());
         movieTableView.setItems(movieObservableList);
@@ -168,9 +172,17 @@ public class ListController {
                 if (Objects.equals(selectedCategory.getName(), "All movies")) {
                     editCategoryButton.setDisable(true);
                     deleteCategoryButton.setDisable(true);
+                    movieObservableList.setAll(movieManager.getAllMovies());
                 } else {
                     editCategoryButton.setDisable(false);
                     deleteCategoryButton.setDisable(false);
+                    movieObservableList.clear();
+
+                    for (Movie m : movieManager.getAllMovies())
+                        if (m.getCategories().size() != 0)
+                            for (int i = 0; i < m.getCategories().size(); i++)
+                                if(m.getCategories().get(i).getId() == selectedCategory.getId())
+                                    movieObservableList.add(m);
                 }
             } catch (NullPointerException ex) {
                 System.out.println("NullPointerException ignored, program works just fine :)");
@@ -241,16 +253,6 @@ public class ListController {
         return contextMenu;
     }
 
-    private ContextMenu getMovieInCategoryContextMenu() {
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem delete = new MenuItem("Delete");
-
-        delete.setOnAction((event) -> deleteMovieInCategory());
-
-        contextMenu.getItems().addAll(delete);
-        return contextMenu;
-    }
-
     private void showNewEditCategoryWindow() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/NewEditCategory.fxml"));
@@ -299,7 +301,11 @@ public class ListController {
             }
 
             //Updates Playlist and SongsInPlaylist lists.
-            categoryObservableList.setAll(categoryManager.getAllCategories());
+            int index = categoryChoiceBox.getSelectionModel().getSelectedIndex();
+            categoryObservableList.clear();
+            categoryObservableList.add(new Category(0, "All movies"));
+            categoryObservableList.addAll(categoryManager.getAllCategories());
+            categoryChoiceBox.getSelectionModel().select(index);
         }
     }
 

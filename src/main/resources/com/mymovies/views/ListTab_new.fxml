@@ -168,13 +168,14 @@
                   </GridPane>
                   <TableView fx:id="movieTableView" onMouseClicked="#handleMovieClick" prefWidth="400.0" VBox.vgrow="ALWAYS">
                      <columns>
-                        <TableColumn fx:id="likeCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="25.0" />
-                        <TableColumn fx:id="ratingCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="60.0" text="Rating" />
+                        <TableColumn fx:id="likeCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="25.0" style="-fx-alignment: CENTER;" />
+                        <TableColumn fx:id="ratingCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="60.0" style="-fx-alignment: CENTER;" text="Rating" />
                         <TableColumn fx:id="titleCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="225.0" text="Title" />
                         <TableColumn fx:id="directorCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="225.0" text="Director" />
-                        <TableColumn fx:id="yearCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="60.0" text="Year" />
-                        <TableColumn fx:id="imdbCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="97.0" text="IMDb Score" />
-                        <TableColumn fx:id="lastviewCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="111.0" text="Last seen" />
+                        <TableColumn fx:id="yearCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="60.0" style="-fx-alignment: CENTER;" text="Year" />
+                        <TableColumn fx:id="imdbCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="97.0" style="-fx-alignment: CENTER;" text="IMDb Score" />
+                        <TableColumn fx:id="categoryCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="234.0" style="-fx-alignment: CENTER;" text="Categories" />
+                        <TableColumn fx:id="lastviewCol" editable="false" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="96.0" style="-fx-alignment: CENTER;" text="Last seen" />
                      </columns>
                   </TableView>
                </children>

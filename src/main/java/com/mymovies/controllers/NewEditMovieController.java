@@ -1,6 +1,7 @@
 package com.mymovies.controllers;
 
 import com.mymovies.model.Category;
+import com.mymovies.model.Movie;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,10 +14,14 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewEditMovieController {
 
+    private String categoriesString;
     private final ObservableList<Category> categoryObservableList = FXCollections.observableArrayList();
+    private final List<Category> categories = new ArrayList<>();
 
     @FXML private GridPane gridPane;
 
@@ -27,7 +32,13 @@ public class NewEditMovieController {
     @FXML private ChoiceBox<Category> categoryChoiceBox;
 
     @FXML void handleCategoryAdd() {
+        if (categories.size() == 0)
+            categoriesString = categoryChoiceBox.getSelectionModel().getSelectedItem().getName();
+        else
+            categoriesString = categoriesString.concat(", " + categoryChoiceBox.getSelectionModel().getSelectedItem().getName());
 
+        categories.add(categoryChoiceBox.getSelectionModel().getSelectedItem());
+        categoryTextField.setText(categoriesString);
     }
 
     @FXML void handleCancel() {
@@ -62,11 +73,11 @@ public class NewEditMovieController {
     }
 
     @FXML void handleSave() {
-        CheckBox like = new CheckBox();
-        like.setSelected(false);
+        if (ListController.isNewPressed) {
+            CheckBox like = new CheckBox();
+            like.setSelected(false);
 
-        if (ListController.isNewPressed)
-            ListController.getMovieManager().addMovie(
+            int movieId = ListController.getMovieManager().addMovie(
                     titleTextField.getText(),
                     directorTextField.getText(),
                     Float.valueOf(ratingTextField.getText()),
@@ -76,17 +87,37 @@ public class NewEditMovieController {
                     Integer.parseInt(yearTextField.getText()),
                     Float.parseFloat(imdbTextField.getText()),
                     like);
-        else
+
+            for (Category c : categories) {
+                Movie movie = new Movie(movieId,
+                        titleTextField.getText(),
+                        directorTextField.getText(),
+                        Float.valueOf(ratingTextField.getText()),
+                        null,
+                        moviePathTextField.getText(),
+                        trailerPathTextField.getText(),
+                        Integer.parseInt(yearTextField.getText()),
+                        Float.parseFloat(imdbTextField.getText()),
+                        like);
+                c.addMovie(movie);
+            }
+        } else {
             ListController.getMovieManager().updateMovie(
                     ListController.selectedMovie,
                     titleTextField.getText(),
                     directorTextField.getText(),
                     Float.valueOf(ratingTextField.getText()),
-                    null,
                     moviePathTextField.getText(),
                     trailerPathTextField.getText(),
                     Integer.parseInt(yearTextField.getText()),
                     Float.parseFloat(imdbTextField.getText()));
+
+            for (Category c : categories) {
+                ListController.selectedMovie.setCategories(categories);
+                c.removeMovie(ListController.selectedMovie);
+                c.addMovie(ListController.selectedMovie);
+            }
+        }
 
         Stage stage = (Stage) saveButton.getScene().getWindow();
         stage.close();
@@ -104,6 +135,17 @@ public class NewEditMovieController {
             trailerPathTextField.setText(ListController.selectedMovie.getTrailerPath());
             yearTextField.setText(String.valueOf(ListController.selectedMovie.getYear()));
             imdbTextField.setText(String.valueOf(ListController.selectedMovie.getImdbScore()));
+
+            if (ListController.selectedMovie.getCategories().size() != 0) {
+                for (int i = 0; i < ListController.selectedMovie.getCategories().size(); i++) {
+                    categories.add(ListController.selectedMovie.getCategories().get(i));
+                    if (i == 0)
+                        categoriesString = ListController.selectedMovie.getCategories().get(0).getName();
+                    else
+                        categoriesString = categoriesString.concat(", " + ListController.selectedMovie.getCategories().get(i).getName());
+                }
+                categoryTextField.setText(categoriesString);
+            }
         }
     }
 }

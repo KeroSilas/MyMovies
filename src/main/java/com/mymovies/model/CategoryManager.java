@@ -23,7 +23,7 @@ public class CategoryManager {
         CatMovieDao catMovieDao = new CatMovieDaoImpl();
         allCategories = categoryDao.getAllCategories();
         for (Category p : allCategories) {
-            p.setMovies(catMovieDao.getCategory(p.getId()));
+            p.setMovies(catMovieDao.getMovies(p.getId()));
         }
     }
 

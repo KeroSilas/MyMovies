@@ -67,19 +67,18 @@ public class MovieDaoImpl implements MovieDao {
 
     //Updates a song's values.
     @Override
-    public void updateMovie(int id, String title, String director, Float rating, Date lastview, String moviePath, String trailerPath, int year, Float imdbScore) {
+    public void updateMovie(int id, String title, String director, Float rating, String moviePath, String trailerPath, int year, Float imdbScore) {
         try (Connection connection = databaseConnector.getConnection()) {
-            String sql = "UPDATE Movies SET title = ?, director = ?, rating = ?, lastview = ?, movie_path = ?, trailer_path = ?, year = ?, imdb_score = ?, fav = ? WHERE movieID = ?;";
+            String sql = "UPDATE Movies SET title = ?, director = ?, rating = ?, movie_path = ?, trailer_path = ?, year = ?, imdb_score = ? WHERE movieID = ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, title);
             statement.setString(2, director);
             statement.setFloat(3, rating);
-            statement.setDate(4, lastview);
-            statement.setString(5, moviePath);
-            statement.setString(6, trailerPath);
-            statement.setInt(7, year);
-            statement.setFloat(8, imdbScore);
-            statement.setInt(9, id);
+            statement.setString(4, moviePath);
+            statement.setString(5, trailerPath);
+            statement.setInt(6, year);
+            statement.setFloat(7, imdbScore);
+            statement.setInt(8, id);
             statement.executeUpdate();
         } catch (SQLException ex) {
             ex.printStackTrace();
