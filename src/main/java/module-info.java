@@ -6,6 +6,7 @@ module com.mymovies {
     requires java.naming;
     requires com.microsoft.sqlserver.jdbc;
     requires javafx.media;
+    requires java.desktop;
 
     exports com.mymovies.controllers;
     opens com.mymovies.controllers to javafx.fxml;

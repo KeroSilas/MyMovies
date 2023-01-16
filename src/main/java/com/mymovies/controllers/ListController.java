@@ -15,10 +15,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
+import java.awt.Desktop;
 
 /**
  * Responsible for controlling various elements in the GUI by utilizing the model classes.
@@ -49,6 +51,8 @@ public class ListController {
     @FXML private TableColumn<Movie, Boolean> likeCol;
     @FXML private ChoiceBox<Category> categoryChoiceBox;
 
+    @FXML private CheckBox mediaPlayerCheckBox;
+
     @FXML private Label selectedMovieLabel;
 
     @FXML private TextField searchTextField;
@@ -57,12 +61,16 @@ public class ListController {
 
     @FXML private Button editCategoryButton, deleteCategoryButton, likeButton, playMovieButton, playTrailerButton, editMovieButton, deleteMovieButton;
 
-    @FXML void handleMovieClick(MouseEvent e) {
+    @FXML void handleMovieClick(MouseEvent e) throws IOException {
         if (selectedMovie != null && e.getClickCount() == 2) {
-            isMoviePlayPressed = true;
+            if (mediaPlayerCheckBox.isSelected()) {
+                isMoviePlayPressed = true;
+                showPlayerWindow();
+            } else {
+                Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+            }
             movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
             movieObservableList.setAll(movieManager.getAllMovies());
-            showPlayerWindow();
         }
     }
 
@@ -105,16 +113,24 @@ public class ListController {
         movieObservableList.setAll(movieManager.getAllMovies());
     }
 
-    @FXML void handlePlayMovie() {
-        isMoviePlayPressed = true;
+    @FXML void handlePlayMovie() throws IOException {
+        if (mediaPlayerCheckBox.isSelected()) {
+            isMoviePlayPressed = true;
+            showPlayerWindow();
+        } else {
+            Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+        }
         movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
         movieObservableList.setAll(movieManager.getAllMovies());
-        showPlayerWindow();
     }
 
-    @FXML void handlePlayTrailer() {
-        isMoviePlayPressed = false;
-        showPlayerWindow();
+    @FXML void handlePlayTrailer() throws IOException {
+        if (mediaPlayerCheckBox.isSelected()) {
+            isMoviePlayPressed = false;
+            showPlayerWindow();
+        } else {
+            Desktop.getDesktop().open(new File(selectedMovie.getTrailerPath()));
+        }
     }
 
     @FXML void handleLike() {
@@ -228,6 +244,7 @@ public class ListController {
             for (Movie m : ListController.getMovieManager().getAllMovies())
                 if (LocalDate.now().minusYears(2).isBefore(m.getLastview().toLocalDate())) {
                     isMoviesToDelete = true;
+                    break;
                 }
             if (isMoviesToDelete)
                 try {
@@ -301,10 +318,18 @@ public class ListController {
         MenuItem like = new MenuItem("Like");
 
         playMovie.setOnAction((event) -> {
-            isMoviePlayPressed = true;
+            if (mediaPlayerCheckBox.isSelected()) {
+                isMoviePlayPressed = true;
+                showPlayerWindow();
+            } else {
+                try {
+                    Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
             movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
             movieObservableList.setAll(movieManager.getAllMovies());
-            showPlayerWindow();
         });
         playTrailer.setOnAction((event) -> {
             isMoviePlayPressed = false;
