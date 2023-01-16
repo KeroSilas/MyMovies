@@ -13,6 +13,8 @@ public interface CatMovieDao {
 
     void deleteMovieFromCategory(int categoryId, int movieId);
 
+    void deleteMovie(int movieId);
+
     void moveMovieToCategory(int categoryId, int movieId);
 
 }

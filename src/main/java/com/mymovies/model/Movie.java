@@ -1,22 +1,16 @@
 package com.mymovies.model;
 
 import javafx.scene.control.CheckBox;
-import javafx.util.Duration;
-
-import com.mymovies.dao.CatMovieDao;
-import com.mymovies.dao.CatMovieDaoImpl;
 
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A class that contains a song's id, title, artist, category, duration and path.
+ * A class that contains all the fields that are relevant for a movie.
  */
 
 public class Movie {
-
-    private final CatMovieDao catMovieDao;
 
     private final int id;
     private String title;
@@ -42,19 +36,10 @@ public class Movie {
         this.year = year;
         this.imdbScore = imdbScore;
         this.like = like;
+        like.setDisable(true);
+        like.setStyle("-fx-opacity: 1");
 
-        catMovieDao = new CatMovieDaoImpl();
         categories = new ArrayList<>();
-    }
-
-    public void addCategory(Category category) {
-        categories.add(category);
-        catMovieDao.moveMovieToCategory(category.getId(), getId()); //adds the song to the database as well
-    }
-
-    public void removeCategory(Category category) {
-        categories.remove(category);
-        catMovieDao.deleteMovieFromCategory(category.getId(), getId());
     }
 
     public List<Category> getCategories() {
@@ -118,14 +103,6 @@ public class Movie {
         return like;
     }
 
-    //Returns the song duration in a string such as this: "02:23".
-    /*public String getDurationInString() {
-        int duration = getDurationInInteger();
-        int minutes = (duration % 3600) / 60;
-        int seconds = duration % 60;
-        return String.format("%02d:%02d", minutes, seconds);
-    }*/
-
     public void setTitle(String title) {
         this.title = title;
     }
@@ -162,7 +139,6 @@ public class Movie {
         this.like.setSelected(like == 1);
     }
 
-    //A toString() method that formats a song's artist and title as such: "Adele - Hello".
     @Override
     public String toString() {
         return String.format("%s", title);

@@ -8,7 +8,7 @@ import com.mymovies.dao.CatMovieDaoImpl;
 import java.util.List;
 
 /**
- * A class that is responsible for manipulating the retrieved lists from PlaylistDao.
+ * A class that is responsible for manipulating the retrieved lists from CategoryDao.
  * Also sends queries to the database.
  */
 
@@ -17,7 +17,7 @@ public class CategoryManager {
     private final CategoryDao categoryDao;
     private final List<Category> allCategories;
 
-    //Constructor that retrieves all the songs in a playlist from the database and stores them in each playlist object locally.
+    //Constructor that retrieves all the movies in a category from the database and stores them in each category object locally.
     public CategoryManager() {
         categoryDao = new CategoryDaoImpl();
         CatMovieDao catMovieDao = new CatMovieDaoImpl();
@@ -31,13 +31,13 @@ public class CategoryManager {
         return allCategories;
     }
 
-    //Creates a new playlist both locally and on the database.
+    //Creates a new category both locally and on the database.
     public void addCategory(String name) {
         int categoryId = categoryDao.createCategory(name);
         allCategories.add(new Category(categoryId, name));
     }
 
-    //Updates a playlist both locally and on the database.
+    //Updates a category both locally and on the database.
     public void updateCategory(Category category, String name) {
         for (Category p : allCategories) {
             if (p.getId() == category.getId())
@@ -46,7 +46,7 @@ public class CategoryManager {
         categoryDao.updateCategory(category.getId(), name);
     }
 
-    //Removes a playlist both locally and on the database.
+    //Removes a category both locally and on the database.
     public void removeCategory(Category category) {
         allCategories.removeIf(p -> p.getId() == category.getId());
         categoryDao.deleteCategory(category.getId());

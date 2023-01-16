@@ -20,7 +20,7 @@ public class CatMovieDaoImpl implements CatMovieDao {
         databaseConnector = new DatabaseConnector();
     }
 
-    //Retrieves a list of the songs on a playlist and returns an ArrayList with them.
+    //Retrieves a list of the movies in a category and returns an ArrayList with them.
     public List<Movie> getMovies(int categoryId) {
         List<Movie> categories = new ArrayList<>();
         try (Connection connection = databaseConnector.getConnection()) {
@@ -57,6 +57,7 @@ public class CatMovieDaoImpl implements CatMovieDao {
         return categories;
     }
 
+    //Retrieves a list of the categories in a movie and returns an ArrayList with them.
     @Override
     public List<Category> getCategories(int movieId) {
         List<Category> categories = new ArrayList<>();
@@ -84,7 +85,7 @@ public class CatMovieDaoImpl implements CatMovieDao {
         return categories;
     }
 
-    //Deletes a song from a playlist.
+    //Deletes a movie from a category.
     @Override
     public void deleteMovieFromCategory(int categoryId, int movieId) {
         try (Connection connection = databaseConnector.getConnection()) {
@@ -98,7 +99,19 @@ public class CatMovieDaoImpl implements CatMovieDao {
         }
     }
 
-    //Moves a song into a playlist.
+    @Override
+    public void deleteMovie(int movieId) {
+        try (Connection connection = databaseConnector.getConnection()) {
+            String sql = "DELETE FROM CatMovie WHERE movieID = ?;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, movieId);
+            statement.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    //Moves a movie into a category.
     @Override
     public void moveMovieToCategory(int categoryId, int movieId) {
         try (Connection connection = databaseConnector.getConnection()) {

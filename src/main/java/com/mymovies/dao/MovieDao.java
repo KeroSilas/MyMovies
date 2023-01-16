@@ -19,6 +19,4 @@ public interface MovieDao {
 
     int createMovie(String title, String director, Float rating, java.sql.Date lastview, String moviePath, String trailerPath, int year, Float imdbScore, CheckBox like);
 
-    List<Movie> searchMovie(String search);
-
 }

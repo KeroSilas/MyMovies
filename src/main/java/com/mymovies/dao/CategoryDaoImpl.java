@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Uses the DatabaseConnector class and sends queries to the Playlists table on the database.
+ * Uses the DatabaseConnector class and sends queries to the Categories table on the database.
  */
 
 public class CategoryDaoImpl implements CategoryDao {
@@ -18,7 +18,7 @@ public class CategoryDaoImpl implements CategoryDao {
         databaseConnector = new DatabaseConnector();
     }
 
-    //Retrieves all the songs on the Playlists table and returns an ArrayList with them.
+    //Retrieves all categories.
     @Override
     public List<Category> getAllCategories() {
         List<Category> categories = new ArrayList<>();
@@ -41,7 +41,7 @@ public class CategoryDaoImpl implements CategoryDao {
         return categories;
     }
 
-    //Deletes a playlist.
+    //Deletes a category.
     @Override
     public void deleteCategory(int id) {
         try (Connection connection = databaseConnector.getConnection()) {
@@ -54,7 +54,7 @@ public class CategoryDaoImpl implements CategoryDao {
         }
     }
 
-    //Updates a playlist's values.
+    //Updates a category's values.
     @Override
     public void updateCategory(int id, String name) {
         try (Connection connection = databaseConnector.getConnection()) {
@@ -68,8 +68,8 @@ public class CategoryDaoImpl implements CategoryDao {
         }
     }
 
-    //Creates a new playlist.
-    //Also returns an int value for the ID of the playlist that was just created.
+    //Creates a new category.
+    //Also returns an int value for the ID of the category that was just created.
     @Override
     public int createCategory(String name) {
         int categoryId = 0;

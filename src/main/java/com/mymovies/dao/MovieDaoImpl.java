@@ -19,7 +19,7 @@ public class MovieDaoImpl implements MovieDao {
         databaseConnector = new DatabaseConnector();
     }
 
-    //Retrieves all the songs on the Songs table and returns an ArrayList with them.
+    //Retrieves all the movies on the Songs table and returns an ArrayList with them.
     @Override
     public List<Movie> getAllMovies() {
         List<Movie> movies = new ArrayList<>();
@@ -52,7 +52,7 @@ public class MovieDaoImpl implements MovieDao {
         return movies;
     }
 
-    //Deletes a song.
+    //Deletes a movie.
     @Override
     public void deleteMovie(int id) {
         try (Connection connection = databaseConnector.getConnection()) {
@@ -65,7 +65,7 @@ public class MovieDaoImpl implements MovieDao {
         }
     }
 
-    //Updates a song's values.
+    //Updates a movie's values.
     @Override
     public void updateMovie(int id, String title, String director, Float rating, String moviePath, String trailerPath, int year, Float imdbScore) {
         try (Connection connection = databaseConnector.getConnection()) {
@@ -111,8 +111,8 @@ public class MovieDaoImpl implements MovieDao {
         }
     }
 
-    //Creates a new song.
-    //Also returns an int value for the ID of the song that was just created.
+    //Creates a new movie.
+    //Also returns an int value for the ID of the movie that was just created.
     @Override
     public int createMovie(String title, String director, Float rating, Date lastview, String moviePath, String trailerPath, int year, Float imdbScore, CheckBox like) {
         int movieId = 0;
@@ -136,40 +136,5 @@ public class MovieDaoImpl implements MovieDao {
             ex.printStackTrace();
         }
         return movieId;
-    }
-
-    //Returns a list of songs where the search input matches a title or an artist.
-    @Override
-    public List<Movie> searchMovie(String search) {
-        List<Movie> movies = new ArrayList<>();
-        try (Connection connection = databaseConnector.getConnection()) {
-            String sql = "SELECT * FROM Movies WHERE title LIKE ? OR director LIKE ?;";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "%" + search + "%");
-            statement.setString(2, "%" + search + "%");
-            if (statement.execute()) {
-                ResultSet resultSet = statement.getResultSet();
-                while (resultSet.next()) {
-                    int id = resultSet.getInt("movieID");
-                    String title = resultSet.getString("title");
-                    String director = resultSet.getString("director");
-                    Float rating = resultSet.getFloat("rating");
-                    Date lastview = resultSet.getDate("lastview");
-                    String moviePath = resultSet.getString("movie_path");
-                    String trailerPath = resultSet.getString("trailer_path");
-                    int year = resultSet.getInt("year");
-                    Float imdbScore = resultSet.getFloat("imdb_score");
-                    boolean fav = resultSet.getBoolean("fav");
-                    CheckBox like = new CheckBox();
-                    like.setSelected(fav);
-
-                    Movie movie = new Movie(id, title, director, rating, lastview, moviePath, trailerPath, year, imdbScore, like);
-                    movies.add(movie);
-                }
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return movies;
     }
 }
