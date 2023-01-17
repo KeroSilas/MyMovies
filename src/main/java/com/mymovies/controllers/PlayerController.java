@@ -38,7 +38,7 @@ public class PlayerController {
 
     @FXML private VBox mediaViewPane;
 
-    //Determines whether the player is playing or paused and changes the buttons action accordingly.
+    //Toggles between play and pause.
     @FXML
     void handlePlayPause() {
         if (player.isPlaying()) {
@@ -83,6 +83,7 @@ public class PlayerController {
     }
 
     public void initialize() {
+        //Checks which action was taken from the ListController (trailer or movie).
         Path path;
         if (ListController.isMoviePlayPressed)
             path = Path.of(ListController.selectedMovie.getMoviePath());
@@ -90,6 +91,7 @@ public class PlayerController {
             path = Path.of(ListController.selectedMovie.getTrailerPath());
 
         player = new Player(path);
+
         mediaView.fitHeightProperty().bind(mediaViewPane.heightProperty());
         mediaView.fitWidthProperty().bind(mediaViewPane.widthProperty());
 
@@ -132,7 +134,7 @@ public class PlayerController {
                 muteUnmuteImage.setImage(muteImage);
             } else if (!Objects.equals(oldValue, newValue) && player.getVolume() > 0) {
                 player.mute(false);
-                if (volumeBar.lookup(".bar") != null) //would give an error on launch, presumably since the bar hadn't been loaded yet
+                if (volumeBar.lookup(".bar") != null) //Would give an error on launch, presumably since the bar hadn't been loaded yet
                     volumeBar.lookup(".bar").setStyle("-fx-background-color: linear-gradient(to right, #376ef8, #295cdc);");
                 muteUnmuteImage.setImage(unmuteImage);
             }

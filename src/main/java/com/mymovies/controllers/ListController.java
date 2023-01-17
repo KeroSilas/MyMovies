@@ -61,13 +61,17 @@ public class ListController {
 
     @FXML private Button editCategoryButton, deleteCategoryButton, likeButton, playMovieButton, playTrailerButton, editMovieButton, deleteMovieButton;
 
-    @FXML void handleMovieClick(MouseEvent e) throws IOException {
+    @FXML void handleMovieClick(MouseEvent e) {
         if (selectedMovie != null && e.getClickCount() == 2) {
             if (mediaPlayerCheckBox.isSelected()) {
                 isMoviePlayPressed = true;
                 showPlayerWindow();
             } else {
-                Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+                try {
+                    Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
             movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
             movieObservableList.setAll(movieManager.getAllMovies());
@@ -113,24 +117,12 @@ public class ListController {
         movieObservableList.setAll(movieManager.getAllMovies());
     }
 
-    @FXML void handlePlayMovie() throws IOException {
-        if (mediaPlayerCheckBox.isSelected()) {
-            isMoviePlayPressed = true;
-            showPlayerWindow();
-        } else {
-            Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
-        }
-        movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
-        movieObservableList.setAll(movieManager.getAllMovies());
+    @FXML void handlePlayMovie() {
+        playMovie();
     }
 
-    @FXML void handlePlayTrailer() throws IOException {
-        if (mediaPlayerCheckBox.isSelected()) {
-            isMoviePlayPressed = false;
-            showPlayerWindow();
-        } else {
-            Desktop.getDesktop().open(new File(selectedMovie.getTrailerPath()));
-        }
+    @FXML void handlePlayTrailer() {
+        playTrailer();
     }
 
     @FXML void handleLike() {
@@ -173,6 +165,7 @@ public class ListController {
         movieTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         movieTableView.setContextMenu(getMovieContextMenu());
 
+        //Updates whether buttons should be enabled or disabled if a movie has been selected or not. Also updates the title label in the bottom right of the GUI.
         movieTableView.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
             if (!Objects.equals(oldValue, newValue) && movieTableView.getSelectionModel().getSelectedItem() == null) {
                 selectedMovie = null;
@@ -194,11 +187,12 @@ public class ListController {
             }
         });
 
-        categoryObservableList.add(new Category(0, "All movies"));
+        categoryObservableList.add(new Category(0, "All movies")); //By default, always creates an "All movies" category that is used to show every movie.
         categoryObservableList.addAll(categoryManager.getAllCategories());
         categoryChoiceBox.setItems(categoryObservableList);
-        categoryChoiceBox.getSelectionModel().select(0);
+        categoryChoiceBox.getSelectionModel().select(0); //Selects the "All movies" category by default.
 
+        //Runnable that updates the TableView according to which category has been selected.
         categoryChoiceBox.setOnAction(e -> {
             selectedCategory = categoryChoiceBox.getSelectionModel().getSelectedItem();
             try {
@@ -240,9 +234,11 @@ public class ListController {
             }
         });
 
+        //Runs a check if the DeleteSuggestion should be opened.
+        //Checks if there is a movie that hasn't been seen in 2+ years.
         Platform.runLater(() -> {
             for (Movie m : ListController.getMovieManager().getAllMovies())
-                if (LocalDate.now().minusYears(2).isBefore(m.getLastview().toLocalDate())) {
+                if (LocalDate.now().minusYears(2).isAfter(m.getLastview().toLocalDate())) {
                     isMoviesToDelete = true;
                     break;
                 }
@@ -317,24 +313,8 @@ public class ListController {
         MenuItem delete = new MenuItem("Delete");
         MenuItem like = new MenuItem("Like");
 
-        playMovie.setOnAction((event) -> {
-            if (mediaPlayerCheckBox.isSelected()) {
-                isMoviePlayPressed = true;
-                showPlayerWindow();
-            } else {
-                try {
-                    Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
-            movieObservableList.setAll(movieManager.getAllMovies());
-        });
-        playTrailer.setOnAction((event) -> {
-            isMoviePlayPressed = false;
-            showPlayerWindow();
-        });
+        playMovie.setOnAction((event) -> playMovie());
+        playTrailer.setOnAction((event) -> playTrailer());
         edit.setOnAction((event) -> editMovie());
         delete.setOnAction((event) -> deleteMovie());
         like.setOnAction((event) -> editMovieLike());
@@ -371,6 +351,34 @@ public class ListController {
         alert.setTitle("Confirmation");
         alert.initOwner(searchTextField.getScene().getWindow()); //Retrieves the title bar icon from the main window by setting the alerts owner to that window.
         return alert.showAndWait();
+    }
+
+    private void playMovie() {
+        if (mediaPlayerCheckBox.isSelected()) {
+            isMoviePlayPressed = true;
+            showPlayerWindow();
+        } else {
+            try {
+                Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
+        movieObservableList.setAll(movieManager.getAllMovies());
+    }
+
+    private void playTrailer() {
+        if (mediaPlayerCheckBox.isSelected()) {
+            isMoviePlayPressed = false;
+            showPlayerWindow();
+        } else {
+            try {
+                Desktop.getDesktop().open(new File(selectedMovie.getTrailerPath()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private void editMovieLike() {
