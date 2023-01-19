@@ -22,7 +22,7 @@
    <children>
       <VBox fx:id="mediaViewPane" alignment="CENTER" style="-fx-background-color: black;" VBox.vgrow="ALWAYS">
          <children>
-            <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="200.0" managed="false">
+            <MediaView fx:id="mediaView" fitHeight="200.0" fitWidth="200.0" managed="false" nodeOrientation="INHERIT" VBox.vgrow="ALWAYS">
                <viewport>
                   <Rectangle2D />
                </viewport></MediaView>

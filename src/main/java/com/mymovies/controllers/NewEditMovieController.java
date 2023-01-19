@@ -85,7 +85,8 @@ public class NewEditMovieController {
                     trailerPathTextField.getText(),
                     Integer.parseInt(yearTextField.getText()),
                     Float.parseFloat(imdbTextField.getText()),
-                    like);
+                    like
+            );
 
             for (Category c : categories) {
                 c.addMovie(ListController.getMovieManager().getAllMovies().get(ListController.getMovieManager().getAllMovies().size() - 1));
@@ -100,7 +101,8 @@ public class NewEditMovieController {
                     moviePathTextField.getText(),
                     trailerPathTextField.getText(),
                     Integer.parseInt(yearTextField.getText()),
-                    Float.parseFloat(imdbTextField.getText()));
+                    Float.parseFloat(imdbTextField.getText())
+            );
 
             ListController.getMovieManager().removeMovieInAllCategories(ListController.selectedMovie);
             for (Category c : categories) {

@@ -243,19 +243,7 @@ public class ListController {
                     break;
                 }
             if (isMoviesToDelete)
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/DeleteSuggestion.fxml"));
-                    Scene scene = new Scene(fxmlLoader.load());
-                    Stage stage = new Stage();
-                    stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/delete.png"));
-                    stage.setTitle("Delete Movies");
-                    stage.setResizable(false);
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    stage.setScene(scene);
-                    stage.showAndWait();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                showDeleteSuggestionWindow();
             movieObservableList.setAll(movieManager.getAllMovies());
         });
     }
@@ -276,6 +264,8 @@ public class ListController {
             stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/logo.png"));
             stage.setTitle("MyMovies Player");
             stage.setResizable(true);
+            stage.setMinWidth(600);
+            stage.setMinHeight(200);
             stage.initModality(Modality.NONE);
             stage.setScene(scene);
             stage.show();
@@ -335,6 +325,22 @@ public class ListController {
                 stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/edit.png"));
                 stage.setTitle("Edit Category");
             }
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.showAndWait();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void showDeleteSuggestionWindow() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/mymovies/views/DeleteSuggestion.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.getIcons().add(new Image("file:src/main/resources/com/mymovies/images/delete.png"));
+            stage.setTitle("Delete Movies");
             stage.setResizable(false);
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
