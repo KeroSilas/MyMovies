@@ -94,8 +94,17 @@ public class ListController {
             isSearching = true;
         } else {
             searchTextField.clear();
-            movieObservableList.setAll(movieManager.getAllMovies());
+
+            //These next lines of code are not something I'm proud of, but it works.
+            //Basically, I needed a way to update the TableView list back to what it was before searching, so I made it switch briefly between "All movies" and the current selected category.
+            //This was done to trigger the setOnAction runnable for the ChoiceBox in the initialize method.
+            //But then another problem came up, if the chosen category was already "All movies", then it wouldn't trigger setOnAction, so here I manually check for it's index and retrieve all movies.
+            int index = categoryChoiceBox.getSelectionModel().getSelectedIndex();
             categoryChoiceBox.getSelectionModel().select(0);
+            categoryChoiceBox.getSelectionModel().select(index);
+            if (index == 0)
+                movieObservableList.setAll(getMovieManager().getAllMovies());
+
             searchUnsearchImage.setImage(searchImage);
             isSearching = false;
         }
