@@ -63,18 +63,7 @@ public class ListController {
 
     @FXML void handleMovieClick(MouseEvent e) {
         if (selectedMovie != null && e.getClickCount() == 2) {
-            if (mediaPlayerCheckBox.isSelected()) {
-                isMoviePlayPressed = true;
-                showPlayerWindow();
-            } else {
-                try {
-                    Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
-            movieObservableList.setAll(movieManager.getAllMovies());
+            playMovie();
         }
     }
 
@@ -247,7 +236,7 @@ public class ListController {
         //Checks if there is a movie that hasn't been seen in 2+ years.
         Platform.runLater(() -> {
             for (Movie m : ListController.getMovieManager().getAllMovies())
-                if (LocalDate.now().minusYears(2).isAfter(m.getLastview().toLocalDate())) {
+                if (m.getLastview() != null && LocalDate.now().minusYears(2).isAfter(m.getLastview().toLocalDate())) {
                     isMoviesToDelete = true;
                     break;
                 }
@@ -369,29 +358,33 @@ public class ListController {
     }
 
     private void playMovie() {
-        if (mediaPlayerCheckBox.isSelected()) {
-            isMoviePlayPressed = true;
-            showPlayerWindow();
-        } else {
-            try {
-                Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
+        if (!Objects.equals(selectedMovie.getMoviePath(), "")) {
+            if (mediaPlayerCheckBox.isSelected()) {
+                isMoviePlayPressed = true;
+                showPlayerWindow();
+            } else {
+                try {
+                    Desktop.getDesktop().open(new File(selectedMovie.getMoviePath()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
+            movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
+            movieObservableList.setAll(movieManager.getAllMovies());
         }
-        movieManager.updateMovieLastview(selectedMovie, Date.valueOf(java.time.LocalDate.now()));
-        movieObservableList.setAll(movieManager.getAllMovies());
     }
 
     private void playTrailer() {
-        if (mediaPlayerCheckBox.isSelected()) {
-            isMoviePlayPressed = false;
-            showPlayerWindow();
-        } else {
-            try {
-                Desktop.getDesktop().open(new File(selectedMovie.getTrailerPath()));
-            } catch (IOException ex) {
-                ex.printStackTrace();
+        if (!Objects.equals(selectedMovie.getTrailerPath(), "")) {
+            if (mediaPlayerCheckBox.isSelected()) {
+                isMoviePlayPressed = false;
+                showPlayerWindow();
+            } else {
+                try {
+                    Desktop.getDesktop().open(new File(selectedMovie.getTrailerPath()));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }
@@ -415,10 +408,11 @@ public class ListController {
         if (result.isPresent() && result.get() == ButtonType.YES) {
             movieManager.removeMovie(selectedMovie);
             movieObservableList.setAll(movieManager.getAllMovies());
+
             //Loops through and deletes all copies of the deleted movie from each category.
-            for (int i = 0; i < categoryManager.getAllCategories().size(); i++) {
+            /*for (int i = 0; i < categoryManager.getAllCategories().size(); i++) {
                 categoryManager.getAllCategories().get(i).getMovies().removeIf(s -> s.getId() == selectedMovie.getId());
-            }
+            }*/
 
             //Updates Category list.
             int index = categoryChoiceBox.getSelectionModel().getSelectedIndex();

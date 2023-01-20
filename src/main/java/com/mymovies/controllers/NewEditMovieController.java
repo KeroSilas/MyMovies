@@ -72,47 +72,53 @@ public class NewEditMovieController {
     }
 
     @FXML void handleSave() {
-        if (ListController.isNewPressed) {
-            CheckBox like = new CheckBox();
-            like.setSelected(false);
+        if (!isInputInvalid()) {
+            if (ListController.isNewPressed) {
+                CheckBox like = new CheckBox();
+                like.setSelected(false);
 
-            ListController.getMovieManager().addMovie(
-                    titleTextField.getText(),
-                    directorTextField.getText(),
-                    Float.valueOf(ratingTextField.getText()),
-                    null,
-                    moviePathTextField.getText(),
-                    trailerPathTextField.getText(),
-                    Integer.parseInt(yearTextField.getText()),
-                    Float.parseFloat(imdbTextField.getText()),
-                    like
-            );
+                ListController.getMovieManager().addMovie(
+                        titleTextField.getText(),
+                        directorTextField.getText(),
+                        Float.valueOf(ratingTextField.getText()),
+                        null,
+                        moviePathTextField.getText(),
+                        trailerPathTextField.getText(),
+                        Integer.parseInt(yearTextField.getText()),
+                        Float.parseFloat(imdbTextField.getText()),
+                        like
+                );
 
-            for (Category c : categories) {
-                c.addMovie(ListController.getMovieManager().getAllMovies().get(ListController.getMovieManager().getAllMovies().size() - 1));
+                for (Category c : categories) {
+                    c.addMovie(ListController.getMovieManager().getAllMovies().get(ListController.getMovieManager().getAllMovies().size() - 1));
+                }
+                ListController.getMovieManager().getAllMovies().get(ListController.getMovieManager().getAllMovies().size() - 1).setCategories(categories);
+            } else {
+                ListController.getMovieManager().updateMovie(
+                        ListController.selectedMovie,
+                        titleTextField.getText(),
+                        directorTextField.getText(),
+                        Float.valueOf(ratingTextField.getText()),
+                        moviePathTextField.getText(),
+                        trailerPathTextField.getText(),
+                        Integer.parseInt(yearTextField.getText()),
+                        Float.parseFloat(imdbTextField.getText())
+                );
+
+                ListController.getMovieManager().removeMovieInAllCategories(ListController.selectedMovie);
+                for (Category c : categories) {
+                    c.addMovie(ListController.selectedMovie);
+                }
+                ListController.selectedMovie.setCategories(categories);
             }
-            ListController.getMovieManager().getAllMovies().get(ListController.getMovieManager().getAllMovies().size() - 1).setCategories(categories);
+
+            Stage stage = (Stage) saveButton.getScene().getWindow();
+            stage.close();
         } else {
-            ListController.getMovieManager().updateMovie(
-                    ListController.selectedMovie,
-                    titleTextField.getText(),
-                    directorTextField.getText(),
-                    Float.valueOf(ratingTextField.getText()),
-                    moviePathTextField.getText(),
-                    trailerPathTextField.getText(),
-                    Integer.parseInt(yearTextField.getText()),
-                    Float.parseFloat(imdbTextField.getText())
-            );
-
-            ListController.getMovieManager().removeMovieInAllCategories(ListController.selectedMovie);
-            for (Category c : categories) {
-                c.addMovie(ListController.selectedMovie);
-            }
-            ListController.selectedMovie.setCategories(categories);
+            ratingTextField.clear();
+            yearTextField.clear();
+            imdbTextField.clear();
         }
-
-        Stage stage = (Stage) saveButton.getScene().getWindow();
-        stage.close();
     }
 
     public void initialize() {
@@ -137,5 +143,43 @@ public class NewEditMovieController {
             if (!Objects.equals(oldValue, newValue))
                 categoryDeleteButton.setDisable(false);
         });
+    }
+
+    private boolean isInputInvalid() {
+        boolean b = false;
+        if (!(ratingTextField.getText() == null || ratingTextField.getText().length() == 0)) {
+            try {
+                float f = Float.parseFloat(ratingTextField.getText());
+                if (f < 1.0  || f > 10.0){
+                    b=true;
+                }
+            } catch (NumberFormatException ex) {
+                b=true;
+                System.out.println("Invalid input in rating.");
+            }
+        }
+        if (!(imdbTextField.getText() == null || imdbTextField.getText().length() == 0)) {
+            try {
+                float f = Float.parseFloat(imdbTextField.getText());
+                if (f < 1.0  || f > 10.0){
+                    b=true;
+                }
+            } catch (NumberFormatException ex) {
+                b=true;
+                System.out.println("Invalid input in imdb score.");
+            }
+        }
+        if (!(yearTextField.getText() == null || yearTextField.getText().length() == 0)) {
+            try {
+                int i = Integer.parseInt(yearTextField.getText());
+                if (i < 0  || i > 3000){
+                    b=true;
+                }
+            } catch (NumberFormatException ex) {
+                b=true;
+                System.out.println("Invalid input in year.");
+            }
+        }
+        return b;
     }
 }

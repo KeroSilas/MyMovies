@@ -62,7 +62,7 @@ public class DeleteSuggestionController {
 
         //Adds every movie that hasn't been seen in 2+ years to an ArrayList, which is to be shown on a TableView.
         for (Movie m : ListController.getMovieManager().getAllMovies())
-            if (LocalDate.now().minusYears(2).isAfter(m.getLastview().toLocalDate()))
+            if (m.getLastview() != null && LocalDate.now().minusYears(2).isAfter(m.getLastview().toLocalDate()))
                 moviesLastSeen.add(m);
 
         movieObservableList.addAll(moviesLastSeen);
